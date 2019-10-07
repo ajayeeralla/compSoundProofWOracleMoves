@@ -1,0 +1,753 @@
+
+(***************IND-Definitions**************************************************)
+(********************************************************************************)
+
+Require Import Coq.Arith.Arith.
+Require Import Coq.Arith.EqNat.
+Require Import Coq.Arith.Plus.
+Require Import Coq.Lists.List .
+Require Import Le Gt Minus Bool Setoid.
+Require Import List.
+Require Import Coq.Lists.ListSet .
+Require Import Coq.Init.Peano.
+Require Import Coq.Structures.OrderedTypeEx.
+Require Import Coq.Arith.Peano_dec.
+Require Import Coq.Numbers.Natural.Peano.NPeano.
+Require Import Coq.Init.Logic.
+Require Import Coq.NArith.BinNat.
+Require Import Coq.Relations.Relation_Definitions.
+Require Import Coq.Classes.SetoidTactics.
+Require Import Relation_Definitions.
+Require Import Morphisms.
+Require Import Setoid.
+Require Import Program.
+Require Import Coq.Logic.JMeq.
+
+
+
+(***********Definitions :Message, Term**********************)
+(***********************************************************)
+
+Inductive message : Type :=
+| Mvar : nat -> message
+| O: message
+|N: nat -> message
+| if_then_else_M: Bool -> message -> message -> message
+| exp : message -> message -> message -> message
+| pair: message -> message -> message
+| pi1 : message -> message
+|pi2 : message -> message
+| ggen : message -> message 
+| r : message -> message
+| new : message
+|act : message -> message
+| m : message -> message
+|nonce : message -> message
+|enc: message -> message -> message->message
+|dec : message-> message -> message
+|k: message -> message
+| pk :message -> message
+|sk : message -> message
+with Bool : Type :=
+|Bvar: nat -> Bool
+| TRue: Bool
+| FAlse: Bool
+| EQ_B : Bool -> Bool -> Bool
+| EQ_M : message -> message -> Bool
+|if_then_else_B :  Bool -> Bool -> Bool -> Bool
+|EQL : message -> message -> Bool.
+
+(*************oursum***********************)
+(******************************************)
+
+Inductive oursum : Type:= 
+| msg :  message -> oursum
+| bol :  Bool  -> oursum.
+
+(**********Substitutions for Bvars in messages and Bools*******************************************)
+(**************************************************************************************************)
+
+Reserved Notation "'[' x ':=' s ']' t" (at level 0).
+Reserved Notation "'(' x ':=' s ')' t" (at level 0).
+Fixpoint subbol_bol (n : nat )(s:Bool) (t:Bool) : Bool :=
+ match t with 
+| Bvar n' =>  if (beq_nat n' n) then s else t
+| FAlse => FAlse
+| TRue => TRue
+| EQ_B  b1 b2 =>  EQ_B  ([n:=s] b1) ([n:=s] b2)
+| EQ_M t1 t2 => EQ_M ((n:= s)t1) ((n:=s) t2)
+| if_then_else_B t1 t2 t3 => if_then_else_B  ([n:=s] t1) ([n:=s] t2) ([n:=s] t3) 
+| EQL t1 t2 => EQL ((n:=s) t1) ((n:=s) t2)
+ end
+where "'[' x ':=' s ']' t" := (subbol_bol x s t)
+with subbol_msg (n : nat )(s:Bool) (t:message) : message :=
+ match t with 
+| if_then_else_M b3 t1 t2 => if_then_else_M ([n:=s] b3) (( n:=s ) t1) (( n:=s ) t2)
+| (Mvar n') => (Mvar n')
+| O => O
+| N n'=> N n'
+|new => new
+| exp t1 t2 t3 => exp (( n:=s ) t1) (( n:=s) t2) (( n:=s ) t3)
+| pair t1 t2 => pair (( n:=s ) t1) (( n:=s) t2)
+| pi1 t1 => pi1 (( n:=s ) t1) 
+| pi2 t1 => pi2 (( n:=s ) t1) 
+| ggen t1 => ggen (( n:=s ) t1)
+| act t1 => act(( n:=s ) t1)
+|r t1 => r t1
+| m t1 => m (( n:=s ) t1)
+|enc t1 t2 t3 => enc (( n:=s ) t1) (( n:=s) t2) (( n:=s ) t3)
+|dec t1 t2 => dec  (( n:=s ) t1) (( n:=s) t2) 
+|k t1 => k (( n:=s ) t1)
+| pk t1 => pk (( n:=s ) t1)
+|sk t1 => sk (( n:=s ) t1)
+| nonce t1 => nonce (( n:=s ) t1)
+ end
+where "'(' x ':=' s ')' t" := (subbol_msg x s t).
+
+Eval compute in subbol_msg 1 TRue (if_then_else_M (Bvar 1) O (if_then_else_M (Bvar 1) O O)).
+
+(*********************Substitutions for Mvars in messages and Bools***************)
+(*********************************************************************************)
+
+Reserved Notation "'[[' x ':=' s ']]' t" (at level 0).
+Reserved Notation "'{{' x ':=' s '}}' t" (at level 0).
+Fixpoint submsg_bol (n : nat )(s:message) (t:Bool) : Bool :=
+ match t with 
+| Bvar n' =>  Bvar n'
+| FAlse => FAlse
+| TRue => TRue
+| EQ_B  b1 b2 =>  EQ_B  ([[n:= s]]b1) ([[n:= s]] b2)
+| EQ_M t1 t2 => EQ_M ( {{n:= s }} t1) ( {{ n:=s }} t2)
+| if_then_else_B t1 t2 t3 => if_then_else_B  ([[n:=s]]t1) ([[n:=s]] t2) ([[n:=s]] t3) 
+| EQL t1 t2 => EQL ( {{ n := s }} t1) ( {{ n:=s }} t2)
+ end
+where "'[[' x ':=' s ']]' t" := (submsg_bol x s t)
+with submsg_msg (n : nat )(s:message) (t:message) : message :=
+ match t with 
+| if_then_else_M b3 t1 t2 => if_then_else_M ([[n:=s]] b3) ( {{ n:=s }} t1) ( {{ n:=s }} t2)
+| (Mvar n') =>  if (beq_nat n' n) then s else t
+| O => O
+| N n'=> N n'
+|new => new
+| exp t1 t2 t3 => exp ( {{ n :=s }} t1) ( {{ n:=s }} t2) ( {{ n:=s }} t3)
+| pair t1 t2 => pair ( {{ n:=s }} t1) ( {{ n:=s }} t2)
+| pi1 t1 => pi1 ( {{ n:=s }} t1) 
+| pi2 t1 => pi2 ( {{ n:=s }} t1) 
+| ggen t1 => ggen ( {{ n:=s }} t1)
+| act t1 => act( {{ n:=s }} t1)
+|r t1 => r t1
+| m t1 => m ( {{ n:=s }} t1)
+| enc t1 t2 t3 =>  enc ( {{ n :=s }} t1) ( {{ n:=s }} t2) ( {{ n:=s }} t3)
+ |dec t1 t2 => dec ( {{ n:=s }} t1) ( {{ n:=s }} t2)
+|k t1 => k ( {{ n:=s }} t1) 
+| pk t1 => pk ( {{ n:=s }} t1) 
+|sk t1 => sk ( {{ n:=s }} t1) 
+| nonce t1 => nonce  ( {{ n:=s }} t1) 
+ end
+where "'{{' x ':=' s '}}' t" := (submsg_msg x s t).
+
+Eval compute in  ( {{ 1 := O }} (N 1) ).
+
+(*****************substitution Bool in oursum**************************)
+(**********************************************************************)
+
+Fixpoint subbol_os (n:nat)(s:Bool) (t:oursum):oursum :=
+match t with 
+|msg t1 =>  msg ((n := s) t1)
+|bol b1 =>  bol ( [n := s] b1)
+end.
+
+(*****************substitution message in oursum**************************)
+(*************************************************************************)
+
+Fixpoint submsg_os (n:nat)(s:message) (t:oursum):oursum :=
+match t with 
+|msg t1 =>  msg ({{n := s}} t1)
+|bol b1 =>  bol ( [[n := s]] b1)
+end.
+
+
+(****************************************************************************)
+(**********Closed terms:messages and Bools***********************************)
+
+Fixpoint closed_msg (t:message) : bool:=
+match t with 
+| if_then_else_M b t1 t2 => andb (closed_bol b) (andb (closed_msg t1) (closed_msg t2))
+| (Mvar n') => false
+| O => true
+| N n'=> true
+|new => true
+| exp t1 t2 t3 => andb (closed_msg t1) (andb (closed_msg t2) (closed_msg t3))
+| pair t1 t2 => (andb (closed_msg t1) (closed_msg t2))
+| pi1 t1 => (closed_msg t1) 
+| pi2 t1 => (closed_msg t1) 
+| ggen t1 => (closed_msg t1) 
+| act t1 => (closed_msg t1) 
+|r t1 => true
+| m t1 =>  (closed_msg t1) 
+|enc t1 t2 t3 => andb (closed_msg t1) (andb (closed_msg t2) (closed_msg t3))
+|dec t1 t2 =>(andb (closed_msg t1) (closed_msg t2))
+| k t1 => (closed_msg t1) 
+| pk t1 => (closed_msg t1) 
+| sk t1 =>(closed_msg t1) 
+| nonce t1 => (closed_msg t1) 
+end
+with closed_bol (b :Bool):bool:=
+ match b with 
+| Bvar n' =>  false
+| FAlse => true
+| TRue => true
+| EQ_B  b1 b2 =>  (andb (closed_bol b1) (closed_bol b2))
+| EQ_M t1 t2 => (andb (closed_msg t1) (closed_msg t2))
+| if_then_else_B b t1 t2 =>  andb (closed_bol b) (andb (closed_bol t1) (closed_bol t2))
+| EQL t1 t2 => (andb (closed_msg t1) (closed_msg t2))
+end.
+
+
+Eval compute in (closed_msg (if_then_else_M (Bvar 1) O O)).
+
+(*****************closed term oursum***************************************)
+(**************************************************************************)
+
+Fixpoint closed_os (t:oursum): bool :=
+match t with 
+|msg t1 =>  closed_msg (t1)
+|bol b1 =>  closed_bol (b1)
+end. 
+
+(*****Message list Definition this contains the terms of any type **********)
+(************For example, it contains terms of type Bool and Message********)
+ 
+Inductive ilist (A:Type) : nat -> Type :=
+| Nil : ilist A 0
+| Cons: forall n, A-> ilist A n  -> ilist A (S n).
+
+Check (N 1).
+Check (Nil nat).
+Check ilist_ind.
+Check Cons.
+Check Nil.
+ 
+
+Definition head {n: nat} (A: Type) (l: ilist A (S n)): A :=
+match l with 
+| (Cons _ h  t )=> h
+end.
+
+Definition tail {n: nat} (A: Type) (l: ilist A (S n)): ilist A n :=
+match l with 
+| (Cons _ h  t) => t
+end.
+
+
+
+Lemma test: forall (n: nat) (z: ilist nat (S n)), z = (@Cons nat n (@head n nat  z) (@tail n nat z)).
+Proof. Admitted.
+
+
+
+(********Notations*********************************************************)
+(**************************************************************************)
+
+Notation "x :: l" := (Cons _ _ x l )(at level 60, right associativity).
+Notation "[]" := (Nil _) (at level 1).
+Check Nil.
+Notation "[ x ; .. ; y ]" := (Cons _ _ x ..(Cons _ _ y (Nil _)) ..) .
+Check [msg (N 1); bol TRue]. 
+Check Cons.
+Definition mylist : nat-> Type := ilist oursum.
+
+(***************Closed list *******************************)
+(****************ilist message n***************************)
+
+Fixpoint closed_mlist {n:nat}(l: ilist message n):bool:=
+match l with 
+| Nil=> true
+| h::t => (andb (closed_msg h) (closed_mlist t))
+end.
+
+(*************ilist Bool n**********************)
+(***********************************************)
+
+Fixpoint closed_blist {n:nat}(l: ilist Bool n):bool:=
+match l with 
+| Nil=> true
+| h::t => (andb (closed_bol h) (closed_blist t))
+end.
+
+Eval compute in (closed_blist [FAlse; (Bvar 1)]).
+
+(********************mylist n*************************)
+(*****************************************************)
+
+Fixpoint closed_mylist {n:nat} (l: mylist n):bool :=
+match l with 
+| Nil => true
+| h :: t => (andb (closed_os h) (closed_mylist t))
+        end.
+           
+
+(**************************************************************************)
+(***substitute message in message list*************************************)
+
+
+Fixpoint submsg_list  {n1 :nat} (n:nat)(y:message)(ml : ilist message n1) : ilist message n1 :=
+match ml with 
+|  Nil  => (Nil message)
+| t :: ml' => {{n := y}} t :: submsg_list n y ml'
+end.
+Eval compute in (submsg_list 1 O  [ (Mvar 1) ; (N 2) ; (N 1)]).
+
+(***substitute Bool in  mylist************************************************)
+(*****************************************************************************)
+
+Fixpoint subbol_mylist {n1:nat} (n:nat)(s:Bool)(ml: mylist n1):mylist n1 :=
+match ml with 
+| Nil => []
+| h::t => (subbol_os n s h) :: (subbol_mylist n s t)
+end.
+(***substitute message in  mylist************************************************)
+(********************************************************************************)
+
+Fixpoint submsg_mylist {n1:nat} (n:nat)(s:message)(ml: mylist n1):mylist n1 :=
+match ml with 
+| Nil => []
+| h::t => (submsg_os n s h) :: (submsg_mylist n s t)
+end.
+
+Eval compute in (subbol_mylist 1 TRue [msg O; msg (Mvar 1); bol (Bvar 1)]).
+Eval compute in (submsg_os 1  ( O) (bol (Bvar 1))).
+
+(****appending lists two lists of same type*******************)
+(******** ilist n ++ ilist m**********************************)
+
+Fixpoint app {A:Type} {n1} {n2}(ml1 : ilist A n1)  (ml2 : ilist A n2) : ilist A  (plus n1 n2) :=
+    match ml1 in (ilist _ n1) return (ilist A (n1 + n2)) with
+      | Nil => ml2
+      | x :: ml3 => x :: (app ml3  ml2 )
+    end.
+
+Fixpoint app_mylist {n1} {n2}  (ml1 : mylist n1) (ml2 : mylist n2) : mylist (plus n1 n2) :=
+    match ml1 in (ilist _ n1) return (ilist _ (n1 + n2)) with
+      | [] => ml2
+      | Cons n1 x ml3 => Cons _ _ x (app_mylist ml3  ml2 )
+    end.
+Notation "ml1 ++ ml2 " := (app_mylist  ml1 ml2) (at level 60, right associativity).
+Check Nil.
+Eval compute in app_mylist [bol TRue ; bol TRue] [msg (N 0) ; bol TRue] . 
+
+
+
+(*****adding an elt to a list*********************************)
+(************* m +++ ilist n******************************)
+
+(*********add elt at front in ilist A n**********************************)
+(************************************************************************)
+
+Fixpoint add_elt_front {A:Type}(x:A) {n} (ml:ilist A n) : ilist A ( S n):=
+match ml with
+| [] => [x]
+| ml3 => (app [x] ml3)
+end.
+
+(*********add elt at last in ilist A n**********************************)
+
+Fixpoint add_elt_last {A:Type}(x:A) {n} (ml:ilist A n) : ilist A ( S n):=
+match ml with
+| [] => [x]
+| h::ml3 => h :: (add_elt_last x ml3)
+end.
+(*********add elt at front in mylist************************************)
+
+Fixpoint add_elt_front_mylist (x:oursum) {n} (ml:mylist n) : mylist ( S n):=
+match ml with
+| [] => [x]
+| ml3 => (app_mylist [x] ml3)
+end.
+
+(*********add elt at last in mylist************************************)
+Fixpoint add_elt_last_mylist (x:oursum) {n} (ml:mylist n) : mylist ( S n):=
+match ml with
+| [] => [x]
+| h::ml3 => h :: (add_elt_last x ml3)
+end.
+
+(*********reverse ilist A n**************************************)
+ 
+Fixpoint reverse {n1}{A:Type}(ml:ilist A n1) : ilist A n1 :=
+    match ml with
+      | [] => []
+      | x :: ml' => (add_elt_last x (reverse ml') )
+    end.
+(*********reverse mylist**************************************)
+Fixpoint reverse_mylist {n1}(ml:mylist n1) : mylist n1 :=
+    match ml with
+      | [] => []
+      | x :: ml' => (add_elt_last_mylist x (reverse ml') )
+    end.
+
+Eval compute in reverse [bol FAlse ; bol TRue].
+Notation " x +++ m1 " := (add_elt_front x m1)(at level 0, right associativity).
+Eval compute in ((bol TRue) +++ [bol TRue ; bol FAlse]).
+Eval compute in (add_elt_last (msg O)  [msg (N 1) ; msg O]).
+Eval compute in 0-1.
+
+
+(******************************************************************)
+(**************projections in list*********************************)
+
+Fixpoint project {n:nat}(a:oursum)(n1:nat)(l: mylist n): mylist 1 :=
+match n1 with
+| 0 => [a]
+| 1 => match l with 
+          | [] => [a]
+          | h::t => [h]
+         end
+| S n' => match l with 
+            |[] => [a] 
+            |h::t => (project a n' t )
+             end
+end.
+
+Eval compute in project (msg O) 2 [msg  (N 1);  msg (N 2); msg (N 3)].
+ 
+(**********constant function "const" definition*************************)
+(***********************************************************************)
+
+Definition const {X:Type}{Y:Type}(a : X) := fun _ : Y => a.
+Eval compute in (const (N 0) O ).
+
+
+(****************SOME FUNCTIONS********************************************)
+(*****exponentiation of each elt with c in  ilist message n****************)
+
+Fixpoint expelts_list  {n:nat}(c :message)(G: message)(ml : ilist message n): (ilist message n) :=
+match  ml with 
+|[] => []
+| h:: ml' => exp G h c :: expelts_list c G ml'
+
+end.
+(*********exponentiation of each elt with c in mylist n****************************)
+
+Fixpoint expelts_mylist  {n:nat}(c :message)(G: message)(ml : mylist n): (mylist n) :=
+match  ml with 
+|[] => []
+| h:: ml' =>  match h with 
+             | msg t => msg (exp G t c) :: (expelts_mylist  c  G ml')
+             | bol b => bol b :: (expelts_mylist  c  G ml')
+              end
+end.
+
+(*********drop one from ilist A n *****************************)
+Fixpoint dropone {n:nat}{A:Type} (m: ilist A n):(ilist A (pred n)):=
+match m with 
+| [] => []
+ |  h:: m1 => m1
+end.
+
+(*********drop one from mylist n *****************************)
+Fixpoint dropone_mylist {n:nat}(m: mylist n):(mylist (pred n)):=
+match m with 
+| [] => []
+ |  h:: m1 => m1
+end.
+(*************drop two from ilist A n***************************************)
+Definition droptwo {n:nat}{A:Type} (ml: ilist A n):(ilist A (pred (pred n))):= (dropone (dropone ml)).
+(*************drop two from mylist n***************************************)
+Definition droptwo_mylist {n:nat}(ml: mylist n):(mylist (pred (pred n))):= (dropone_mylist (dropone_mylist ml)).
+(*******drop one exp from ilis message n****************************)
+Definition droponeexp {n1:nat}(c :message)(G:message)(ml : ilist message n1): (ilist message (pred n1)):=
+ dropone (expelts_list c G ml).
+(*******drop one exp from mylist n***t****************************)
+Definition droponeexp_mylist {n1:nat}(c :message)(G:message)(ml : mylist n1): (mylist (pred n1)):=
+ dropone_mylist (expelts_mylist c G ml).
+(****drop two exp from an ilist message n*******************************)
+Definition droptwoexp {n1:nat}(c :message)(G:message)(ml : ilist message n1): (ilist message (pred (pred n1))):=
+(dropone (dropone (expelts_list   c G ml))).
+(****drop two exp from an mylist n*******************************)
+Definition droptwoexp_mylist {n1:nat}(c :message)(G:message)(ml : mylist n1): (mylist (pred (pred n1))):=
+(dropone_mylist (dropone_mylist (expelts_mylist   c G ml))).
+
+Eval compute in droptwoexp (N 1) O [N 1; (N 2) ; N 3; N 5; N 7].
+Eval compute in const [O] [FAlse ; TRue ; FAlse].
+
+(**************************convert list A -> ilist A (length (list A))********************************)
+(****************************************************************************************************)
+
+ Fixpoint inject {A}{Nil: ilist A (length (nil))}(ls : list A): ilist A (length ls) :=
+    match ls with
+      | nil => Nil
+      | cons h t => Cons A _ h (@inject A [] t )
+    end.
+
+Check ilist oursum.
+Check mylist 2.
+(***************************list oursum-> mylist n *****************************************)
+Fixpoint inject_os {Nil : mylist (length (nil))}(ls : list oursum) : mylist (length ls) :=
+match ls with
+| nil => Nil
+| cons h t => Cons _ _ h (@inject_os [] t)
+end.
+
+Eval compute in inject_os (cons (msg O) (cons (bol TRue) (cons (bol FAlse) nil))). 
+
+(**************************convert ilist A n -> list A***********************************************)
+
+Fixpoint unject {n}{A : Type} (ls : ilist A n) : list A :=
+    match ls with
+      | Nil => nil
+      | Cons _ h t => cons h (unject t)
+    end.
+
+(**************************convert mylist n -> list oursum***********************************************)
+
+Fixpoint unject_os {n} (ls : mylist n) : list oursum :=
+    match ls with
+      | Nil => nil
+      | Cons _ h t => cons h (unject t)
+    end.
+Eval compute in (unject_os [bol TRue; bol FAlse]).
+
+(**************************Check for given nat in terms: message ; Bool***********)
+
+Fixpoint notoccur_bol (n : nat )(t:Bool) : bool :=
+ match t with 
+| Bvar n' => if (beq_nat n' n) then false else true
+| FAlse => true
+| TRue => true
+| EQ_B  b1 b2 =>  andb (notoccur_bol n b1)  (notoccur_bol n b2)
+| EQ_M t1 t2 => andb (notoccur_msg n t1) ( notoccur_msg n t2)
+| if_then_else_B t1 t2 t3 => andb ( notoccur_bol n t1)  (andb (notoccur_bol n t2)(notoccur_bol n t3) )
+| EQL t1 t2 => andb ( notoccur_msg n t1) ( notoccur_msg n t2)
+ end
+with notoccur_msg (n : nat )(t:message) : bool :=
+ match t with 
+| if_then_else_M b3 t1 t2 => andb (notoccur_bol n b3) (andb ( notoccur_msg n  t1)( notoccur_msg n t2))
+| (Mvar n') => if (beq_nat n' n) then false else true
+| O => true
+| N n'=> if (beq_nat n' n) then false else true
+|new => true
+| exp t1 t2 t3 => andb ( notoccur_msg n t1) (andb ( notoccur_msg n t2) ( notoccur_msg n t3))
+| pair t1 t2 => andb( notoccur_msg n t1) ( notoccur_msg n t2)
+| pi1 t1 => ( notoccur_msg n t1)
+| pi2 t1 => ( notoccur_msg n t1)
+| ggen t1 => ( notoccur_msg n t1)
+| act t1 => ( notoccur_msg n t1)
+| r t1 => ( notoccur_msg n t1)
+| m t1 => ( notoccur_msg n t1)
+|enc t1 t2 t3 =>  andb ( notoccur_msg n t1) (andb ( notoccur_msg n t2) ( notoccur_msg n t3))
+|dec t1 t2 => andb( notoccur_msg n t1) ( notoccur_msg n t2)
+| k t1 => ( notoccur_msg n t1)
+| pk t1 => ( notoccur_msg n t1)
+| sk t1 => ( notoccur_msg n t1)
+| nonce t1 => (notoccur_msg n t1)
+end.
+ 
+Eval compute in (notoccur_msg 1 (pi2 (N 2))).
+
+(**************************Check for given nat in term oursum***********)
+
+Fixpoint notoccur_os (n:nat)(t:oursum): bool :=
+match t with 
+|bol b => notoccur_bol n b 
+|msg t => notoccur_msg n t
+end.
+
+
+(**** Check for nat in ilist message n********)
+
+Fixpoint notoccur_mlist {m:nat}(x:nat) (ml : ilist message m):bool :=
+match ml with
+| [] => true
+| h :: ml1 => (andb (notoccur_msg x h) (notoccur_mlist x ml1))
+end.
+
+(**** Check for nat in ilist Bool n************)
+
+Fixpoint notoccur_blist {m:nat}(x:nat) (ml : ilist Bool m):bool :=
+match ml with
+| [] => true
+| h :: ml1 => (andb (notoccur_bol x h) (notoccur_blist x ml1))
+end.
+
+(**** Check for nat in mylist n********)
+Fixpoint notoccur_mylist {m:nat}(x:nat) (ml :  mylist m):bool :=
+match ml with
+| [] => true
+| h :: ml1 => (andb (notoccur_os x h) (notoccur_mylist x ml1))
+end.
+
+Eval compute in (notoccur_mylist 1 [bol (Bvar 2)]).
+(***no of occurences of an element in ilist *****************)
+ Fixpoint count_occur {n:nat}  (x : nat)(l : ilist nat n) : nat :=
+    match l with
+      | Nil => 0
+      | Cons _ y tl =>
+        let n := count_occur x tl in
+          if eq_nat_dec y x then S n else n
+    end.
+Eval compute in (count_occur 1 [1;1;1]).
+
+(***Check if no redundancies in ilist**************************)
+
+Fixpoint nodup {n:nat}(l:ilist nat n): bool :=
+match l with
+|Nil => true
+| h::t => let x := (count_occur h (h::t) ) in 
+          if (eq_nat_dec x 1) then (andb true (nodup t)) else false
+end.
+
+Eval compute in (nodup [1;1]).
+Eval compute in (nodup [1;2;3]).
+(****Check if each elt in (ilist nat n) occurs in (ilist message m)*******************)
+
+Fixpoint notocclist_mlist {n:nat} {m:nat}(nl:ilist nat n)(ml:ilist message m): bool :=
+match nl with
+|[] => true
+| h::t=> (andb (notoccur_mlist h ml) (notocclist_mlist t ml))
+end.
+
+Eval compute in (notoccur_mlist 1 [(N 2);(N 4)]).
+Eval compute in True \/ False.
+
+(****Check if each elt in (ilist nat n) occurs in (mylist m)*******************)
+
+Fixpoint notocclist_mylist {n:nat} {m:nat}(nl:ilist nat n)(ml: mylist m): bool :=
+match nl with
+|[] => true
+| h::t=> (andb (notoccur_mylist h ml) (notocclist_mylist t ml))
+end.
+
+Eval compute in (notoccur_mylist 1 [msg (N 2); msg (N 4)]).
+
+
+(**************add elt at the last of the list A********************************)
+
+Fixpoint addlast {A:Type}(l : list A) (x:A): list A :=
+match l with 
+| nil => cons x nil
+| cons h t => cons h (addlast t x)
+end.
+Eval compute in (addlast (cons 1 nil) 1).
+
+Eval compute in (addlast (cons (msg O) nil) (bol TRue)).
+(***************get last element from ilist A n******************************)
+Fixpoint getlast{A:Type} {n:nat} (l:ilist A n){o:A} : A :=
+match l with
+|Nil => o
+|[a] => a
+|h::t => (@getlast A _ t  o)
+end. 
+(***************get last element from mylist n******************************)
+Fixpoint getlast_mylist {n:nat} (l: mylist n){o:oursum} : oursum:=
+match l with
+|Nil => o
+|[a] => a
+|h::t => (@getlast_mylist _ t  o)
+end. 
+
+(**********************remove last elt from (ilist A (S n))***************************)
+
+
+Definition remlast{n:nat}{A:Type} {Nil:ilist A n} (l:ilist A (S n)) : ilist A n :=reverse(dropone(reverse l)).
+Eval compute in remlast [1;2;3].
+
+(*****************************remove last elt from mylist****************************)
+
+Definition remlast_mylist {n:nat} {Nil:mylist n} (l:mylist (S n)) : mylist n :=reverse(dropone_mylist(reverse l)).
+Eval compute in remlast [msg (N 0); bol TRue].
+
+
+(****Check if an element occurs in ilist*********************)
+
+ Fixpoint notoccur_nlist {n:nat}(a:nat) (l:ilist nat n) : bool :=
+    match l with
+      | Nil => true
+      | h::t =>   if (beq_nat h a) then false else (andb true (notoccur_nlist a t) )
+    end.
+Eval compute in (notoccur_nlist 1 [2;3;1]).
+Eval compute in (S (pred 1)).
+
+Check beq_nat_refl.
+
+
+(************Axioms for names**************)
+(**********Fresh propositions***************)
+
+(************Axioms for names**************)
+(**********Fresh propositions***************)
+
+(**Fixpoint Fresh {n:nat}{m:nat} (nl : ilist nat n)(ml : ilist message m): bool :=
+match nl with 
+| [] => true
+| [a] => (notoccur_mlist a ml) 
+| l => (andb (nodup l) (notocclist_mlist l ml) )
+end. 
+
+**)
+
+Fixpoint Fresh {n:nat}{m:nat} (nl : ilist nat n)(ml : mylist m): bool :=
+match nl with 
+| [] => true
+| [a] => (notoccur_mylist a ml) 
+| l => (andb (nodup l) (notocclist_mylist l ml) )
+end. 
+
+Check beq_nat.
+
+(******************sub bool in ilist message n******************************************)
+
+Fixpoint subbol_list {m:nat}(n:nat)(b:Bool)(ml:ilist message m): ilist message m :=
+match ml with 
+| Nil => []
+| h::t => ((n := b)h):: (subbol_list n b t)
+end.
+Eval compute in (1:= TRue)(Mvar 1).
+Eval compute in (subbol_list 1 TRue [(1:= TRue) (if_then_else_M (Bvar 1) (Mvar 1) O)]).
+
+(***********Notations for DDH***********************************)
+(***Notation " x '^' y " := (exp _ x y) (at level 30, right associativity).
+Notation " '(' x  '^' y ')' '^' z" := (exp _ (exp _ x y) z)(at level 0).***)
+
+Eval compute in (exp O O O).
+Check (exp O (exp O O O) O).
+Check (exp O (exp O O O) O).
+Notation " '<' x ',' y '>'":= (pair x y) (at level 0).
+Notation " '<' x ',' y '>1'" := (pi1 ( pair x y))(at level 0).
+Notation " '<' x ',' y '>2'" := (pi2 ( pair x y))(at level 0).
+
+
+Check (pair O O).
+Eval compute in subbol_msg 2 TRue (pair  O  (if_then_else_M (Bvar 2) O (if_then_else_M (Bvar 2) O O))).
+
+
+(*************Testing purpose*********************)
+(*************************************************)
+
+Eval compute in (firstn 1 (unject [1;2;3])). 
+Eval compute in inject (skipn 1 (unject [O;(N 1);(N 2)])) .
+Print inject.
+Eval compute in unject [TRue ; FAlse].
+Eval compute in @inject nat [] (cons 1 nil)  .
+
+Eval compute in (In 3 (unject [1;2])).
+Eval compute in (tl (unject [1;2])).
+Print in_eq.
+Eval compute in (nth 1 (unject [1;2]) 0).
+Eval compute in (nth 2 (unject [1;2]) 1).
+Eval compute in (nth_ok 0 (unject [1;2]) 0 ).
+Eval compute in (last (unject [1;2])  0).
+Eval compute in (removelast (unject [1;2])).
+Eval compute in (rev (unject [O; N 1]) ).
+Eval compute in inject (removelast (unject [O; N 1])) .
+Eval compute in (@incl nat (unject [1]) (unject [1;2])).
+Eval compute in (@skipn nat 1 (unject [1;2])).
+Eval compute in (@NoDup nat (unject [1;1])).
+Print NoDup_remove_1 .
+Print NoDup_remove_2.
+Eval compute in (NoDup (unject [1;1])).
+Print In.
+Eval compute in (In 1 (unject [1;2])).
+
+
+

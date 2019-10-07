@@ -1,0 +1,642 @@
+Load "Example16".
+(*****************Fresh(G,g,a,b,c,e)->[G;g;g^a;g^b;g^c;g^(ab);g^(ac); g^(bc); g^(abc)]~[G;g;g^a;g^b;g^c;g^(ab);g^(ac); g^(bc); g^e]***********************)
+
+Theorem Example19: (Fresh [ 0 ; 1 ; 2 ; 3 ; 5] []  = true )
+-> ([msg (pi1 (ggen (N 0))) ; msg (pi2 (ggen (N 0))) ; msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) ; msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) ; msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3))); msg (exp (pi1 (ggen (N 0))) (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2))) ; msg (exp (pi1 (ggen (N 0))) (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3))) ; msg (exp (pi1 (ggen (N 0))) (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3))); msg (exp (pi1 (ggen (N 0))) (exp (pi1 (ggen (N 0)))  (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2))) (r (N 3)))])
+ ~ [msg (pi1 (ggen (N 0))) ; msg (pi2 (ggen (N 0))) ; msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) ; msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) ; msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3))); msg (exp (pi1 (ggen (N 0))) (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2))) ; msg (exp (pi1 (ggen (N 0))) (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3))) ; msg (exp (pi1 (ggen (N 0))) (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3))); msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))] .
+Proof.
+intros.
+assert (H1: Fresh [0; 1; 2; 4] [] = true).
+reflexivity.
+apply DDH in H1.
+pose proof (FRESHIND).
+assert(H2: Fresh [3 ; 7] ([msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+      msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+     msg (exp (pi1 (ggen (N 0)))
+        (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2)))] ++
+     [msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+    msg  (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+   msg  (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)))]) = true) .
+reflexivity.
+assert(H3: (closed_mylist([msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+ msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+        msg (exp (pi1 (ggen (N 0)))
+          (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2)))] ++
+        [msg (pi1 (ggen (N 0)));msg (pi2 (ggen (N 0)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)))] )= true) /\ ( Fresh [3; 7]
+       ([ msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+       msg ( exp (pi1 (ggen (N 0)))
+          (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2)))] ++
+        [msg (pi1 (ggen (N 0))); msg ( pi2 (ggen (N 0)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)))]) = true) /\ ([msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+      msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+      msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+      msg (exp (pi1 (ggen (N 0)))
+        (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2)))]) ~
+     [msg (pi1 (ggen (N 0))); msg  (pi2 (ggen (N 0)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)))]).
+split.
+reflexivity.
+split.
+apply H2.
+apply H1.
+apply FRESHIND with (n1:=3) (n2:=7) in H3 .
+simpl in H3.
+assert (H4: (closed_mylist ([msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+       msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+          msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)))] ++
+        [msg (pi1 (ggen (N 0))) ; msg (pi2 (ggen (N 0)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)))]) = true)/\ Fresh [7; 3]
+       ([msg (pi1 (ggen (N 0))); msg ( pi2 (ggen (N 0)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+          msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)))] ++
+        [msg (pi1 (ggen (N 0))); msg ( pi2 (ggen (N 0)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)))]) = true /\[msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+          msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)))]~
+        [msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)))] ).
+split.
+
+
+reflexivity.
+split.
+reflexivity.
+apply REFL.
+apply FRESHIND in H4.
+simpl in H4.
+
+assert(H5: [msg (r (N 3)); msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+      msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+      msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+      msg (exp (pi1 (ggen (N 0)))
+        (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2)))]~
+     [msg (r (N 3)); msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)))]).
+apply TRANS with (ml2:= [msg (r (N 7)); msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+      msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+      msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+      msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)))]).
+split.
+apply H3.
+apply H4.
+
+
+apply FuncApp_L with (n:=6) (m:=4)(f:= (@droptwoexp 6 (r (N 3)) (pi1 (ggen (N 0)))))(ml1:=[msg (r (N 3)); msg ( pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+      msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+      msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+      msg (exp (pi1 (ggen (N 0)))
+        (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2)))]) (ml2:= [ msg (r (N 3)); msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)));
+    msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2)));
+    msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)))]) in H5.
+simpl in H5.
+assert(H6: Fresh [0;4;3;5] [] = true).
+reflexivity.
+apply DDH in H6.
+assert(line7: (closed_mylist ([msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+      msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+      msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+      msg (exp (pi1 (ggen (N 0)))
+        (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))) (r (N 3)))]++[msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))]) = true)/\(Fresh [2 ; 7] ([msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+ msg   (   exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+     msg ( exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+     msg (exp (pi1 (ggen (N 0)))
+        (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))) (r (N 3)))]++[ msg (pi1 (ggen (N 0))); msg ( pi2 (ggen (N 0)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+    msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))]) = true)/\ [msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+      msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+      msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+      msg (exp (pi1 (ggen (N 0)))
+        (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))) (r (N 3)))] ~
+     [msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+    msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))]).
+split.
+reflexivity.
+split .
+reflexivity.
+apply H6.
+apply FRESHIND with (n1:=2) (n2:=7) in line7 .
+simpl in line7.
+
+Check line7.
+
+
+assert(temp: (closed_mylist ([msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))] ++ [msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))]) =true)/\(Fresh [7 ; 2] ([msg (pi1 (ggen (N 0))); msg ( pi2 (ggen (N 0)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))] ++ [msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+    msg ( exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))]) =true)/\ [msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))]~[msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+     msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))]).
+split.
+reflexivity.
+split.
+reflexivity.
+apply REFL.
+apply FRESHIND with (n1:=7) in temp.
+simpl in temp.
+assert(temp1: [msg (r (N 2));msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+         msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+         msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+         msg (exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))) (r (N 3)))] ~ [msg (r (N 2)); msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+       msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+       msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+       msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))]).
+
+apply TRANS with (ml2:= [msg (r (N 7)); msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))]) .
+split. apply line7. apply temp.
+
+
+
+assert(temp2:(closed_mylist ([msg (r (N 2)); msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+         msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+         msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+         msg (exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))) (r (N 3)))] ++
+        [msg (r (N 2)); msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))]) = true)/\( Fresh [1;7] ([msg (r (N 2)); msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+         msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+         msg (exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))) (r (N 3)))] ++
+        [msg (r (N 2)); msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+       msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))]) = true) /\ [msg (r (N 2)); msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+       msg (  exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+       msg ( exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+        msg (exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))) (r (N 3)))] ~
+        [msg (r (N 2)); msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+       msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))]).
+split.
+reflexivity.
+split.
+reflexivity.
+apply temp1.
+
+apply FRESHIND in temp2.
+simpl in temp2.
+
+
+assert(temp3: (closed_mylist ([msg (r (N 2)); msg  (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+       msg ( exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))] ++  [msg (r (N 2)); msg ( pi1 (ggen (N 0)));msg ( pi2 (ggen (N 0)));
+       msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+       msg ( exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+       msg ( exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))] )= true) /\(Fresh [7;1]  ([msg (r (N 2)); msg ( pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))] ++  [msg (r (N 2)); msg ( pi1 (ggen (N 0)));msg ( pi2 (ggen (N 0)));
+       msg ( exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))] )= true) /\ [msg (r (N 2)); msg (pi1 (ggen (N 0))); msg ( pi2 (ggen (N 0)));
+       msg ( exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+       msg ( exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))] ~ [msg (r (N 2)); msg ( pi1 (ggen (N 0)));msg (pi2 (ggen (N 0)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+       msg ( exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))]).
+split.
+reflexivity.
+split.
+reflexivity.
+apply REFL.
+apply FRESHIND in temp3.
+simpl in temp3.
+assert(temp4: [ msg (r (N 1)); msg (r (N 2)); msg ( pi1 (ggen (N 0))); msg ( pi2 (ggen (N 0)));
+         msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+        msg ( exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+         msg (exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))) (r (N 3)))]~[msg (r (N 1)); msg  (r (N 2)); msg ( pi1 (ggen (N 0))); msg ( pi2 (ggen (N 0)));
+      msg (  exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+      msg (  exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+      msg (  exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))]).
+apply TRANS with (ml2:= [ msg (r (N 7)); msg (r (N 2)); msg (pi1 (ggen (N 0))); msg (pi2 (ggen (N 0)));
+        msg ( exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+        msg ( exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+        msg ( exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))]).
+
+split.
+apply temp2.
+apply temp3.
+
+
+
+apply FuncApp_L with (n:=7) (m:=4)(f:= (@const (ilist oursum 4)(ilist message 7)[ msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))); msg ( exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))); msg  (exp (pi1 (ggen (N 0)))
+          (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3))) (r (N 1))); msg ( exp (pi1 (ggen (N 0)))
+          (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3))) (r (N 2)))]) )(ml1:=[msg (r (N 1)); msg (r (N 2)); msg ( pi1 (ggen (N 0))); msg ( pi2 (ggen (N 0)));
+        msg ( exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+       msg (  exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+        msg ( exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))) (r (N 3)))]) (ml2:=  [msg (r (N 1)); msg ( r (N 2)); msg ( pi1 (ggen (N 0)));msg (pi2 (ggen (N 0)));
+       msg ( exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4)));
+      msg (  exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3)));
+        msg (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))]) in temp4.
+unfold const in temp4.
+
+simpl in temp4.
+
+pose proof (commexp).
+rewrite commexp with (G:= (pi1 (ggen (N 0))))(g:= pi2 (ggen (N 0)))(x := (r (N 3)))(y:= (r (N 1))) in temp4.
+
+rewrite commexp with (G:= (pi1 (ggen (N 0))))(g:= pi2 (ggen (N 0)))(x := (r (N 3)))(y:= (r (N 2))) in temp4.
+
+pose proof (RESTR).
+pose proof(@droptwo 2).
+
+apply RESTR with (n:=11)(m:=9) (A:=message)(ml1:= [r (N 1); r (N 2); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3));
+         exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))) (r (N 3));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+         exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3));
+         exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3))])(ml2:=[r (N 1); r (N 2); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+        exp (pi1 (ggen (N 0)))
+          (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3));
+        exp (pi1 (ggen (N 0)))
+          (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3))]) (P := @droptwo 11 message ) in temp4.
+simpl in temp4.
+apply RESTR_Perm with(n1:=2)(n2:=2)(n3:=1)(n4:=2)(n5:=2)(nl1:= [pi1 (ggen (N 0)); pi2 (ggen (N 0))])
+        (nl2:=  [exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4));  exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3))])
+(nl3:= [exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))) (r (N 3))])(nl4:= [ exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))])(nl5:= [exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3));
+         exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3))])(ml1:= [pi1 (ggen (N 0)); pi2 (ggen (N 0))])(ml2:= [ exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3))])(ml3:= [ exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5))])(ml4:= [ exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))])(ml5:= [  exp (pi1 (ggen (N 0)))
+          (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3));
+        exp (pi1 (ggen (N 0)))
+          (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3))]) in temp4.
+simpl in temp4.
+pose proof(@dropone 2).
+apply RESTR with (n:=10)(m:=9)(A:= message) (P:= (@dropone 10 (message))) (ml1:= [r (N 3); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+      exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+      exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+      exp (pi1 (ggen (N 0)))
+        (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2));
+      exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3));
+      exp (pi1 (ggen (N 0)))
+        (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3));
+      exp (pi1 (ggen (N 0)))
+        (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3));
+      exp (pi1 (ggen (N 0)))
+        (exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2)))
+        (r (N 3))])(ml2:=  [r (N 3); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3));
+     exp (pi1 (ggen (N 0)))
+       (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3));
+     exp (pi1 (ggen (N 0)))
+       (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3));
+     exp (pi1 (ggen (N 0)))
+       (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))) (r (N 3))]) in H5.
+simpl in H5.
+assert(line10: [pi1 (ggen (N 0)); pi2 (ggen (N 0));
+      exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+      exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+      exp (pi1 (ggen (N 0)))
+        (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2));
+      exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3));
+      exp (pi1 (ggen (N 0)))
+        (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3));
+      exp (pi1 (ggen (N 0)))
+        (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3));
+      exp (pi1 (ggen (N 0)))
+        (exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2)))
+        (r (N 3))] ~[pi1 (ggen (N 0)); pi2 (ggen (N 0));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3));
+        exp (pi1 (ggen (N 0)))
+          (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3));
+        exp (pi1 (ggen (N 0)))
+          (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5))]).
+apply TRANS with (ml2:=   [pi1 (ggen (N 0)); pi2 (ggen (N 0));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3));
+     exp (pi1 (ggen (N 0)))
+       (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3));
+     exp (pi1 (ggen (N 0)))
+       (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3));
+     exp (pi1 (ggen (N 0)))
+       (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))) (r (N 3))]).
+split.
+apply H5.
+apply temp4.
+
+assert (temp5: (closedlist_msg ([pi1 (ggen (N 0)); pi2 (ggen (N 0));
+      exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+      exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+      exp (pi1 (ggen (N 0)))
+        (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2))]++
+     [pi1 (ggen (N 0)); pi2 (ggen (N 0));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))]) = true) /\( Fresh [5;7] ([pi1 (ggen (N 0)); pi2 (ggen (N 0));
+      exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+      exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+      exp (pi1 (ggen (N 0)))
+        (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2))]++
+     [pi1 (ggen (N 0)); pi2 (ggen (N 0));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))]) = true) /\ [pi1 (ggen (N 0)); pi2 (ggen (N 0));
+      exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+      exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+      exp (pi1 (ggen (N 0)))
+        (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2))] ~
+     [pi1 (ggen (N 0)); pi2 (ggen (N 0));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))]).
+split.
+reflexivity.
+split.
+reflexivity.
+apply H1.
+apply FRESHIND in temp5.
+simpl in temp5.
+assert(temp6: (closedlist_msg ([pi1 (ggen (N 0)); pi2 (ggen (N 0));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))] ++  [pi1 (ggen (N 0)); pi2 (ggen (N 0));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))]) = true)/\(Fresh [7;5]  ([pi1 (ggen (N 0)); pi2 (ggen (N 0));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))] ++  [pi1 (ggen (N 0)); pi2 (ggen (N 0));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))]) = true)/\  [pi1 (ggen (N 0)); pi2 (ggen (N 0));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))] ~ [pi1 (ggen (N 0)); pi2 (ggen (N 0));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+     exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))]).
+split.
+reflexivity.
+split.
+reflexivity.
+apply REFL.
+apply FRESHIND in temp6.
+simpl in temp6.
+assert(temp7: [r (N 5); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+         exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2))] ~ [r (N 5); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))]).
+apply TRANS with (ml2:= [r (N 7); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))]).
+split.
+apply temp5.
+apply temp6.
+assert(temp8: (closedlist_msg  ([r (N 5); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+         exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2))]++
+        [r (N 5); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))]) = true)/\(Fresh[3;7]([r (N 5); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+         exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2))]++
+        [r (N 5); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))]) = true) /\[r (N 5); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+         exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2))] ~
+        [r (N 5); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))]).
+split.
+reflexivity.
+split.
+reflexivity.
+apply temp7.
+apply FRESHIND in temp8.
+simpl in temp8.
+assert(temp9: (closedlist_msg ([r (N 5); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))]++[r (N 5); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))]) =true)/\(Fresh [7;3] ([r (N 5); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))]++[r (N 5); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))]) =true)/\ ([r (N 5); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))] ~[r (N 5); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))])).
+split.
+reflexivity.
+split.
+reflexivity.
+apply REFL .
+apply FRESHIND in temp9.
+simpl in temp9.
+assert(temp10:[r (N 3); r (N 5); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+         exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2))]~ [r (N 3); r (N 5); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+        exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))]).
+apply TRANS with (ml2:= ([r (N 7); r (N 5); pi1 (ggen (N 0)); pi2 (ggen (N 0));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))])).
+split. apply temp8. apply temp9.
+apply FuncApp_L with (n:=7) (m:=4)(A:= message)(f:= (@const (ilist message 4)(ilist message 7)[ exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3));  exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5));  exp (pi1 (ggen (N 0))) (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3)); exp (pi1 (ggen (N 0)))
+          (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3))] ))in temp10.
+
+unfold const in temp10 .
+simpl in temp10.
+apply RESTR with (n:=11)(m:=9) (A:=message)(P := @droptwo 11 message ) in temp10.
+simpl in temp10.
+apply RESTR_Perm with(n1:=6)(n2:=0)(n3:=1)(n4:=2)(n5:=0)(nl1:=[pi1 (ggen (N 0)); pi2 (ggen (N 0));
+          exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+          exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+          exp (pi1 (ggen (N 0)))
+            (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2));
+          exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3))])
+        (nl2:=  [])
+(nl3:= [exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5))])(nl4:= [ exp (pi1 (ggen (N 0)))
+            (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3));
+          exp (pi1 (ggen (N 0)))
+            (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3))]) (nl5:=[])
+(ml1:=[pi1 (ggen (N 0)); pi2 (ggen (N 0));
+          exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+          exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+            (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4))) ;
+          exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3))])
+        (ml2:=  [])
+(ml3:= [exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5))])(ml4:= [ exp (pi1 (ggen (N 0)))
+            (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3));
+          exp (pi1 (ggen (N 0)))
+            (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3))]) (ml5:=[]) in temp10.
+simpl in temp10.
+apply SYM in temp10.
+assert(line14: [pi1 (ggen (N 0)); pi2 (ggen (N 0));
+          exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+          exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+          exp (pi1 (ggen (N 0)))
+            (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2));
+          exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3));
+          exp (pi1 (ggen (N 0)))
+            (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3));
+          exp (pi1 (ggen (N 0)))
+            (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3));
+          exp (pi1 (ggen (N 0)))
+            (exp (pi1 (ggen (N 0)))
+               (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)))
+               (r (N 2))) (r (N 3))]~[pi1 (ggen (N 0)); pi2 (ggen (N 0));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+         exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3));
+         exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3));
+         exp (pi1 (ggen (N 0)))
+           (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3));
+         exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5))]).
+
+apply TRANS with(ml2:= [pi1 (ggen (N 0)); pi2 (ggen (N 0));
+          exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+          exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2));
+          exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 4));
+          exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3));
+          exp (pi1 (ggen (N 0)))
+            (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3));
+          exp (pi1 (ggen (N 0)))
+            (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3));
+          exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5))]) .
+split.
+apply line10.
+
+apply temp10.
+
+apply RESTR_Perm with(n1:=4)(n2:=1)(n3:=0)(n4:=1)(n5:=3)(nl1:=[pi1 (ggen (N 0)); pi2 (ggen (N 0));
+          exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+          exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))])
+        (nl2:=  [exp (pi1 (ggen (N 0)))
+            (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2))])
+       (nl4:= [  exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3))])
+        (nl3:=  [])
+(nl5:= [ exp (pi1 (ggen (N 0)))
+            (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3));
+          exp (pi1 (ggen (N 0)))
+            (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3));   exp (pi1 (ggen (N 0)))
+            (exp (pi1 (ggen (N 0)))
+               (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1)))
+               (r (N 2))) (r (N 3))]) (ml1:=[pi1 (ggen (N 0)); pi2 (ggen (N 0));
+          exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1));
+          exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))])
+        (ml2:=  [exp (pi1 (ggen (N 0)))
+            (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 2))])
+       (ml4:= [  exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 3))])
+        (ml3:=  [])
+(ml5:= [ exp (pi1 (ggen (N 0)))
+            (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 1))) (r (N 3));
+          exp (pi1 (ggen (N 0)))
+            (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 2))) (r (N 3));  
+               (exp (pi1 (ggen (N 0))) (pi2 (ggen (N 0))) (r (N 5)))
+               ]) 
+ in line14.
+simpl in line14.
+apply line14.
+Qed.
+
+

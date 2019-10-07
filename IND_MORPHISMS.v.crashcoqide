@@ -1,0 +1,503 @@
+Load "IND_DEFINITIONS".
+
+(**Require Export IND_DEFINITIONS.**)
+(**************Indistinguishability Relation *****************)
+(**************Ind_Relation**********************************)
+(********************EQI*******************************************)
+
+
+(****Definition Ind_Relation := forall n , mylist n -> mylist n -> Prop.**)
+
+Variable EQI : forall {n}, relation (mylist n).
+
+Notation "ml1 '~' ml2" := (EQI  ml1 ml2) (at level 0, right associativity).
+
+Axiom EQI_equiv: forall n, equiv (mylist n) (@EQI n).
+
+Instance EQI_Equiv :forall n, Equivalence  (@EQI n).
+Proof.
+split;
+repeat apply EQI_equiv.
+Qed. 
+
+Theorem EQI_ref: forall {n:nat} (ml: mylist n), ml ~ ml.
+Proof.
+intros m.
+apply EQI_equiv.
+Qed.
+
+Theorem EQI_sym: forall {n:nat} (ml1 ml2 : mylist n), ml1 ~ ml2 -> ml2 ~ ml1 .
+Proof.
+intros.
+rewrite H.
+reflexivity.
+Qed.
+
+Theorem EQI_trans : forall {n:nat} (ml1 ml2 ml3: mylist n), ml1 ~ ml2 -> ml2 ~ ml3 -> ml1 ~ ml3.
+Proof.
+  intros.  rewrite <- H in H0; auto.
+Qed.
+
+
+(***************EQm************************************)
+(******************************************************)
+
+Definition EQm : relation message := fun (m1:message)  (m2: message) =>  [bol (EQ_M m1 m2)] ~ [ bol TRue].
+
+
+Notation "ml1 '#' ml2" := (EQm ml1 ml2) (at level 0).
+
+
+Axiom EQm_equiv: equiv message EQm.
+
+
+
+Instance EQm_Equiv : Equivalence  EQm.
+Proof.
+split;
+repeat apply EQm_equiv.
+Qed. 
+
+Theorem EQm_ref: forall m:message, m # m.
+Proof.
+intros m.
+apply EQm_equiv.
+reflexivity.
+Qed.
+
+Theorem EQm_sym: forall m1 m2: message, m1 # m2 -> m2 # m1.
+Proof.
+intros.
+rewrite H.
+reflexivity.
+Qed.
+
+
+Theorem EQm_trans : forall m1 m2 m3 : message, m1 # m2 -> m2 # m3 -> m1 # m3.
+Proof.
+  intros.  rewrite <- H in H0; auto.
+Qed.
+
+
+
+(***************EQb ************************************)
+(*******************************************************)
+
+
+Definition EQb : relation Bool := fun (b1:Bool)  (b2: Bool) =>  [bol (EQ_B b1 b2)] ~ [ bol TRue].
+
+Notation "b1 '##' b2" := (EQb b1 b2) (at level 0).
+
+Axiom BolEQ: equiv Bool EQb.
+
+Instance Bol_Equ_Equiv : Equivalence  EQb.
+Proof.
+split;
+repeat apply BolEQ.
+Qed. 
+
+Theorem EQb_sym: forall b1 b2:Bool, b1 ## b2 -> b2 ## b1.
+Proof.
+intros.
+rewrite H.
+reflexivity.
+Qed.
+
+Theorem EQb_ref: forall b:Bool, b ## b.
+Proof.
+intros.
+reflexivity.
+Qed.
+
+Theorem EQb_trans : forall b1 b2 b3 : Bool, b1 ## b2 -> b2 ## b3 -> b1 ## b3.
+Proof.
+  intros.  rewrite <- H in H0; auto.
+Qed.
+
+
+
+(***********************EQos******************************************************)
+(*********************************************************************************)
+
+Inductive EQos :  relation oursum := 
+|  EQM: forall (m1 m2: message), m1 # m2 ->  EQos (msg m1) (msg m2)
+|  EQB: forall (b1 b2: Bool), b1 ## b2 ->  EQos (bol b1) (bol b2).
+
+Notation "ml1 '###' ml2" := (EQos ml1 ml2) (at level 0).
+
+(*Axiom osEQ: equiv oursum EQos.*)
+
+Instance os_Equ_Equiv : Equivalence  EQos.
+Proof.
+split.
+unfold Reflexive;
+intros;
+destruct x;
+try apply EQM; try apply EQB;
+reflexivity.
+unfold Symmetric; intros; destruct H;  
+    try apply EQM; try apply EQB; symmetry; assumption.
+unfold Transitive; intros.
+  inversion H; subst;
+  inversion H0; subst;
+  try apply  EQM; try apply EQB;   
+  rewrite H1;
+  apply H3.   
+
+Qed.  
+ 
+Theorem EQos_sym: forall b1 b2: oursum, b1 ### b2 -> b2 ### b1.
+Proof.
+intros.
+rewrite H.
+reflexivity.
+Qed.
+
+Theorem EQos_ref: forall b:oursum, b ### b.
+Proof.
+intros.
+reflexivity.
+Qed.
+
+Theorem EQos_trans : forall b1 b2 b3 : oursum, b1 ### b2 -> b2 ### b3 -> b1 ### b3.
+Proof.
+  intros.  rewrite <- H in H0; auto.
+Qed.
+
+
+(*************EQml******************************************)
+(***********************************************************)
+
+Inductive EQml: forall {n:nat}, relation (mylist n) :=
+| EQN :  EQml  (Nil _) (Nil _)
+| EQCONS: forall (m:nat)(os1 os2:oursum)(l1 l2: mylist m), os1 ### os2 -> (EQml  l1  l2) -> EQml (os1 :: l1) (os2::l2).
+
+Notation "ml1 '####' ml2" := (EQml ml1 ml2) (at level 0).
+
+Axiom eqlist_ind: forall (n:nat) (l1 l2: mylist n), l1 #### l2 ->  l1 ~ l2.
+
+(***Definition head {n: nat} (l: mylist (S n)): oursum :=
+match l with 
+| h :: t => h
+end.
+
+Definition tail {n: nat} (l: mylist (S n)):  mylist n:=
+match l with 
+| h:: t => t
+end.
+****)
+
+
+(*Axiom ml_EQ: forall n, equiv (mylist n) EQml.*)
+
+Instance ml_Equ_Equiv {n}: Equivalence  (@EQml n).
+Proof.
+split.
+  unfold Reflexive.
+  induction x.
+   apply EQN.
+
+   apply EQCONS. reflexivity. apply IHx.
+
+ unfold Symmetric.
+
+intros  x y H.
+
+induction H.
+apply EQN.
+apply EQCONS.
+rewrite H. reflexivity. apply IHEQml.
+
+unfold Transitive.
+ intros x y z H1 H2. 
+ induction H1.
+   +  apply H2.
+  + dependent destruction z.
+     - apply EQCONS.    inversion H2; subst. rewrite H. apply H6.
+        dependent destruction H2. apply   IHEQml . assumption.
+Qed.
+
+     
+
+(*Theorem EQml_refl : forall (n:nat) (ml : mylist n), ml ####ml.
+Proof. intros. 
+  induction ml.
+   apply EQN.   
+   apply EQCONS. reflexivity. apply IHml.
+Qed.
+
+Theorem EQml_sym: forall (n:nat), Symmetric (@EQml n).
+Proof.
+intros  n x y H.
+
+induction H.
+
+apply EQN.
+apply EQCONS.
+
+rewrite H. reflexivity. apply IHEQml.
+
+Qed.*)
+
+(*****************morphisms******************************************************************)
+(********************************************************************************************)
+
+
+(********************EQm**************************)
+(*************************************************)
+
+(************exp**************************)
+
+Axiom exp_Cong: forall (m1 m2 m3 m1' m2' m3' : message), m1 # m1' -> m2 # m2' -> m3 # m3' -> (exp m1 m2 m3) # (exp m1' m2' m3').
+Add Parametric Morphism: (@ exp) with
+  signature EQm ==> EQm ==> EQm ==> EQm as exp_mor.
+ Proof.   intros. apply exp_Cong; assumption. Qed.
+
+(************pair*************************)
+
+Axiom pair_Cong: forall (m1 m2  m1' m2'  : message), m1 # m1' -> m2 # m2'  -> (pair m1 m2) # (pair m1' m2').
+Add Parametric Morphism: (@ pair) with
+  signature EQm ==> EQm ==> EQm as pair_mor.
+ Proof.   intros. apply pair_Cong; assumption. Qed.
+
+(************pi1*************************)
+
+Axiom pi1_Cong: forall (m1 m1' : message), m1 # m1' -> (pi1 m1) # (pi1 m1' ).
+Add Parametric Morphism: (@ pi1) with
+  signature EQm ==> EQm as pi1_mor.
+ Proof.   intros. apply pi1_Cong; assumption. Qed.
+
+(************pi2*************************)
+
+Axiom pi2_Cong: forall (m1 m1' : message), m1 # m1' -> (pi2 m1) # (pi2 m1' ).
+Add Parametric Morphism: (@ pi2) with
+  signature EQm ==> EQm as pi2_mor.
+ Proof.   intros. apply pi2_Cong; assumption. Qed.
+
+(************ggen*************************)
+
+Axiom ggen_Cong: forall (m1 m1' : message), m1 # m1' -> (ggen m1) # (ggen m1' ).
+Add Parametric Morphism: (@ ggen) with
+  signature EQm ==> EQm as ggen_mor.
+ Proof.   intros. apply ggen_Cong; assumption. Qed.
+
+(************r*************************)
+
+Axiom r_Cong: forall (m1 m1' : message), m1 # m1' -> (r m1) # (r m1' ).
+Add Parametric Morphism: (@ r) with
+  signature EQm ==> EQm as r_mor.
+ Proof.   intros. apply r_Cong; assumption. Qed.
+
+(************act*************************)
+
+Axiom act_Cong: forall (m1 m1' : message), m1 # m1' -> (act m1) # (act m1' ).
+Add Parametric Morphism: (@ act) with
+  signature EQm ==> EQm as act_mor.
+ Proof.   intros. apply act_Cong; assumption. Qed.
+
+(************m*************************)
+
+Axiom m_Cong: forall (m1 m1' : message), m1 # m1' -> (m m1) # (m m1' ).
+Add Parametric Morphism: (@ m) with
+  signature EQm ==> EQm as m_mor.
+ Proof.   intros. apply m_Cong; assumption. Qed.
+
+(************nonce*************************)
+
+Axiom nonce_Cong: forall (m1 m1' : message), m1 # m1' -> (nonce m1) # (nonce m1' ).
+Add Parametric Morphism: (@ nonce) with
+  signature EQm ==> EQm as nonce_mor.
+ Proof.   intros. apply nonce_Cong; assumption. Qed.
+
+(************enc*************************)
+
+Axiom enc_Cong: forall (m1 m2 m3 m1' m2' m3' : message), m1 # m1' -> m2 # m2' -> m3 # m3'  -> (enc m1 m2 m3) # (enc m1' m2' m3').
+Add Parametric Morphism: (@ enc) with
+  signature EQm ==> EQm ==> EQm ==> EQm as enc_mor.
+ Proof.   intros. apply enc_Cong; assumption. Qed.
+
+(************dec*************************)
+
+Axiom dec_Cong: forall (m1 m2  m1' m2'  : message), m1 # m1' -> m2 # m2'  -> (dec m1 m2) # (dec m1' m2').
+Add Parametric Morphism: (@ dec) with
+  signature EQm ==> EQm ==> EQm as dec_mor.
+ Proof.   intros. apply dec_Cong; assumption. Qed.
+
+(************k*************************)
+
+Axiom k_Cong: forall (m1 m1' : message), m1 # m1' -> (k m1) # (k m1' ).
+Add Parametric Morphism: (@ k) with
+  signature EQm ==> EQm as k_mor.
+ Proof.   intros. apply k_Cong; assumption. Qed.
+
+(************pk*************************)
+
+Axiom pk_Cong: forall (m1 m1' : message), m1 # m1' -> (pk m1) # (pk m1' ).
+Add Parametric Morphism: (@ pk) with
+  signature EQm ==> EQm as pk_mor.
+ Proof.   intros. apply pk_Cong; assumption. Qed.
+
+(************sk*************************)
+
+Axiom sk_Cong: forall (m1 m1' : message), m1 # m1' -> (sk m1) # (sk m1' ).
+Add Parametric Morphism: (@ sk) with
+  signature EQm ==> EQm as sk_mor.
+ Proof.   intros. apply sk_Cong; assumption. Qed.
+
+
+
+(*******************morphisms- EQb****************)
+(*************************************************)
+
+(****if_then_else_B*********************)
+
+Axiom IFB_Cong: forall (b1 b2 b3 b1' b2' b3': Bool), b1 ## b1' -> b2 ## b2' -> b3 ## b3' -> (if_then_else_B b1 b2 b3) ## (if_then_else_B b1' b2' b3').
+
+Add Parametric Morphism: (@if_then_else_B) with
+  signature EQb ==> EQb ==> EQb ==> EQb as ifb_mor.
+ Proof.   intros. apply IFB_Cong; assumption. Qed.
+
+(******if_then_else_M*********************)
+Axiom IFM_Cong: forall (b b' : Bool) ( m1 m2 m1' m2': message), (b ## b') -> m1 # m1' -> m2 # m2' -> (if_then_else_M b m1 m2) # (if_then_else_M b' m1' m2').
+
+Add Parametric Morphism: (@if_then_else_M) with
+  signature EQb ==> EQm ==> EQm ==> EQm as ifm_mor.
+ Proof.   intros. apply IFM_Cong; assumption. Qed.
+(*********EQ_B************)
+Axiom EQB_Cong: forall (b1 b2 b1' b2': Bool),  b1 ## b1' -> b2 ## b2' ->  (EQ_B b1 b2) ## (EQ_B b1' b2').
+   
+  Add Parametric Morphism: (@EQ_B) with
+  signature EQb ==> EQb ==> EQb as EQB_mor.
+ Proof.   intros. apply EQB_Cong; assumption. Qed.
+
+(********EQ_M*********************)
+
+Axiom EQM_Cong: forall (m1 m2 m1' m2' : message), m1 # m1' -> m2 # m2' -> (EQ_M m1 m2) ## (EQ_M m1' m2').
+
+Add Parametric Morphism: (@EQ_M) with
+  signature EQm ==> EQm ==> EQb as EQM_mor.
+ Proof.   intros. apply EQM_Cong; assumption. Qed.
+
+(********EQL ********************)
+Axiom EQL_Cong : forall (m1 m2 m1' m2' : message), m1 # m1' -> m2 # m2' -> (EQL m1 m2 ) ## (EQL m1' m2').
+Add Parametric Morphism: (@EQL) with
+  signature EQm ==> EQm ==> EQb as EQL_mor.
+ Proof.   intros. apply EQL_Cong; assumption. Qed.
+
+
+(**********************morphism for substitution --substbl_bl***************)
+
+Axiom substbl_bl_Cong : forall (b1 b2 b1' b2' : Bool) (n: nat), b1 ## b1' -> b2 ## b2' -> (subbol_bol n b1 b2) ## (subbol_bol n b1' b2').
+
+Add Parametric Morphism : (@subbol_bol) with
+signature eq ==> EQb ==> EQb ==> EQb as substbl_bl_mor.
+Proof. intros.  apply substbl_bl_Cong. apply H. apply H0.
+Qed.
+(**********************morphism for substitution --substbl_msg ***************)
+
+Axiom substbl_msg_Cong : forall (b1 b1' : Bool)(m2 m2' : message) (n: nat), b1 ## b1' -> m2 # m2' -> (subbol_msg n b1 m2) # (subbol_msg n b1' m2').
+
+Add Parametric Morphism : (@subbol_msg) with
+signature eq ==> EQb ==> EQm ==> EQm as substbl_msg_mor.
+Proof. intros.  apply substbl_msg_Cong. apply H. apply H0.
+Qed.
+
+(**********************morphism for substitution --substmsg_Bool***************)
+
+Axiom substmsg_Bool_Cong : forall (m1 m1' : message) (b1 b1' : Bool) (n: nat), m1 # m1' -> b1 ## b1' -> (submsg_bol n m1 b1) ## (submsg_bol n m1' b1').
+
+Add Parametric Morphism : (@submsg_bol) with
+signature eq ==> EQm ==> EQb ==> EQb as substmsg_Bool_mor.
+Proof. intros.  apply substmsg_Bool_Cong. apply H. apply H0.
+Qed.
+
+(**********************morphism for substitution --substmsg_msg***************)
+
+Axiom substmsg_msg_Cong : forall (m1 m2 m1' m2' : message) (n: nat), m1 # m1' -> m2 # m2' -> (submsg_msg n m1 m2) # (submsg_msg n m1' m2').
+
+Add Parametric Morphism : (@submsg_msg) with
+signature eq ==> EQm ==> EQm ==> EQm as substmsg_msg_mor.
+Proof. intros.  apply substmsg_msg_Cong. apply H. apply H0.
+Qed.
+
+(************************************EQos*****************************)
+(*********************************************************************)
+
+(**************msg congruence**************)
+
+(*Axiom msg_Cong: forall (m1 m1'  : message), m1 # m1'  -> (msg m1 ) ### (msg m1').*)
+
+Add Parametric Morphism : (@msg ) with
+signature EQm ==> EQos as msg_mor.
+Proof. intros. apply EQM. apply H. Qed.
+
+
+(**************bol congruence**************)
+
+(***Axiom bol_Cong: forall (b1 b1'  : Bool), b1 ## b1'  -> (bol b1 ) ### (bol b1').***)
+
+Add Parametric Morphism : (@bol ) with
+signature EQb ==> EQos as bol_mor.
+Proof.  intros. apply EQB. apply H. Qed. 
+
+
+(************************************EQml******************************)
+(**********************************************************************)
+ 
+(*********morphism for the ml-EQml***********************)
+
+Add Parametric Morphism {n}: (Cons oursum n) with
+signature EQos ==> EQml ==> EQml  as Cons_mor.
+Proof. intros. apply EQCONS. apply H. apply H0. Qed. 
+
+(******************app ++ *********************)
+(**********************************************)
+
+Axiom app_EQml_Cong : forall (n1 n2:nat)(l1 l1'  : mylist n1) (l2 l2': mylist n2), l1 #### l1' -> l2 ####l2' -> (l1 ++ l2) #### (l1' ++ l2').
+
+Add Parametric Morphism {n1} {n2}: (@app_mylist n1 n2 ) with
+signature  EQml ==> EQml ==> EQml  as app_EQml_mor.
+Proof. intros. apply app_EQml_Cong. apply H. apply H0. Qed. 
+
+(*********************************EQI***********************************)
+(***********************************************************************)
+
+(**********************ml-EQI*****************************************)
+
+
+Axiom ml_EQI_Cong: forall (n : nat) (l1 l2 : mylist n) (os1 os2 : oursum), os1 ### os2 -> l1 ####l2 -> (Cons oursum n os1 l1 ) ~ (Cons  oursum n os2 l2) .
+
+Add Parametric Morphism {n}: (Cons oursum n) with
+signature EQos ==> EQml ==> EQI  as ml_EQI_mor.
+
+Proof. intros. apply ml_EQI_Cong. apply H. apply H0. Qed.
+
+(************************app-EQI***************************************)
+
+Axiom app_EQI_Cong : forall (n1 n2:nat)(l1 l1'  : mylist n1) (l2 l2': mylist n2), l1 #### l1' -> l2 ####l2' -> (l1 ++ l2) ~ (l1' ++ l2').
+
+Add Parametric Morphism {n1} {n2}: (@app_mylist n1 n2 ) with
+signature  EQml ==> EQml ==> EQI  as app_EQI_mor.
+Proof. intros. apply app_EQI_Cong. apply H. apply H0. Qed. 
+
+
+(*********************f : mylist n -> message****************)
+
+Axiom fnm_ml_Cong: forall (n : nat) (l1 l2 : mylist n) (f : mylist n -> message),  l1 ####l2 -> (f l1) # (f l2).
+
+Add Parametric Morphism {n} {f: mylist n -> message}: ( f) with
+signature EQml ==> EQm as fnm_ml_mor.
+Proof. intros. apply fnm_ml_Cong. apply H. Qed.
+
+(*********************f : mylist n -> Bool ****************)
+
+Axiom fnb_ml_Cong: forall (n : nat) (l1 l2 : mylist n) (f : mylist n -> Bool),  l1 ####l2 -> (f l1) ## (f l2).
+
+Add Parametric Morphism {n} {f: mylist n -> Bool}: ( f) with
+signature EQml ==> EQb as fnb_ml_mor.
+Proof. intros. apply fnb_ml_Cong. apply H. Qed.
+
+
+   
+
+

@@ -1,0 +1,123 @@
+  msg
+      (if_then_else_M (EQ_M (reveal x1) (i 1)) O
+         (if_then_else_M (EQ_M (reveal x1) (i 2)) O
+            (if_then_else_M (EQ_M (to x1) (i 1)) & (EQ_M (act x1) new)
+               (if_then_else_M (EQ_M (reveal x2) (i 1)) O
+                  (if_then_else_M (EQ_M (reveal x2) (i 2)) O
+                     (if_then_else_M (EQ_M (to x2) (i 1)) acc
+                        (if_then_else_M (EQ_M (to x2) (i 2)) grn2 O))))
+               (if_then_else_M (EQ_M (to x1) (i 1))
+                  (if_then_else_M (EQ_M (reveal x2) (i 2)) O
+                     (if_then_else_M
+                        (EQ_M (reveal x2) (i 1)) & (EQ_M (to x1) (i 1))
+                        mx1rn1
+                        (if_then_else_M
+                           (EQ_M (to x2) (i 2)) & (EQ_M (act x2) new) grn2 O)))
+                  (if_then_else_M (EQ_M (to x1) (i 2)) & (EQ_M (act x1) new)
+                     (if_then_else_M (EQ_M (reveal x2) (i 1)) O
+                        (if_then_else_M (EQ_M (reveal x2) (i 2)) O
+                            (if_then_else_M (EQ_M (to x2) (i 2)) acc
+                              (if_then_else_M (EQ_M (to x2) (i 1)) grn2 O))))
+                     (if_then_else_M (EQ_M (to x1) (i 2))
+                        (if_then_else_M (EQ_M (reveal x2) (i 1)) O
+                           (if_then_else_M
+                              (EQ_M (reveal x2) (i 2)) & (EQ_M (to x1) (i 2))
+                              mx1rn1
+                              (if_then_else_M
+                                 (EQ_M (to x2) (i 1)) & (EQ_M (act x2) new)
+                                 grn2 O))) O))))));
+    msg
+      (if_then_else_M (EQ_M (reveal x1) (i 1)) O
+         (if_then_else_M (EQ_M (reveal x1) (i 2)) O
+            (if_then_else_M (EQ_M (to x1) (i 1)) & (EQ_M (act x1) new)
+               (if_then_else_M (EQ_M (reveal x2) (i 1)) O
+                  (if_then_else_M (EQ_M (reveal x2) (i 2)) O
+                     (if_then_else_M (EQ_M (to x2) (i 1))
+                        (if_then_else_M (EQ_M (reveal x3) (i 2)) O
+                           (if_then_else_M
+                              ((((EQ_M (reveal x3) (i 1)) &
+                                 (EQ_M (to x2) (i 1))) & 
+                                (EQ_M (to x1) (i 1))) &
+                               (notb (EQ_M (act x2) new))) &
+                              (EQ_M (act x1) new) mx2rn1
+                              (if_then_else_M
+                                 (EQ_M (to x3) (i 2)) & (EQ_M (act x3) new)
+                                 grn3
+                                 (if_then_else_M (EQ_M (to x3) (i 2)) grn3 O))))
+                        (if_then_else_M (EQ_M (to x2) (i 2))
+                           (if_then_else_M (EQ_M (reveal x3) (i 1)) O
+                              (if_then_else_M
+                                 (EQ_M (reveal x3) (i 2)) &
+                                 (EQ_M (to x1) (i 2)) mx1rn1
+                                 (if_then_else_M
+                                    (EQ_M (reveal x3) (i 2)) &
+                                    (EQ_M (to x2) (i 2)) mx2rn2
+                                    (if_then_else_M 
+                                       (EQ_M (to x3) (i 1)) acc O)))) O))))
+               (if_then_else_M (EQ_M (to x1) (i 1))
+                  (if_then_else_M (EQ_M (reveal x2) (i 2)) O
+                     (if_then_else_M
+                        (EQ_M (reveal x2) (i 1)) & (EQ_M (to x1) (i 1))
+                        (if_then_else_M (EQ_M (reveal x3) (i 2)) O
+                           (if_then_else_M
+                              (EQ_M (to x3) (i 2)) & (EQ_M (act x3) new) grn3
+                              (if_then_else_M (EQ_M (to x3) (i 2)) grn3 O)))
+                        (if_then_else_M
+                           (EQ_M (to x2) (i 2)) & (EQ_M (act x2) new)
+                           (if_then_else_M (EQ_M (reveal x3) (i 2)) O
+                              (if_then_else_M
+                                 (EQ_M (reveal x3) (i 1)) &
+                                 (EQ_M (to x1) (i 1)) mx1rn1
+                                 (if_then_else_M
+                                    (EQ_M (reveal x3) (i 1)) &
+                                    (EQ_M (to x2) (i 1)) mx2rn2
+                                    (if_then_else_M 
+                                       (EQ_M (to x3) (i 2)) acc O)))) O)))
+                  (if_then_else_M (EQ_M (to x1) (i 2)) & (EQ_M (act x1) new)
+                     (if_then_else_M (EQ_M (reveal x2) (i 1)) O
+                        (if_then_else_M (EQ_M (reveal x2) (i 2)) O
+                           (if_then_else_M (EQ_M (to x2) (i 2))
+                              (if_then_else_M (EQ_M (reveal x3) (i 1)) O
+                                 (if_then_else_M
+                                    ((((EQ_M (reveal x3) (i 2)) &
+                                       (EQ_M (to x2) (i 2))) &
+                                      (EQ_M (to x1) (i 2))) &
+                                     (notb (EQ_M (act x2) new))) &
+                                    (EQ_M (act x1) new) mx2rn1
+                                    (if_then_else_M
+                                       (EQ_M (to x3) (i 1)) &
+                                       (EQ_M (act x3) new) grn3
+                                       (if_then_else_M 
+                                          (EQ_M (to x3) (i 1)) grn3 O))))
+                              (if_then_else_M (EQ_M (to x2) (i 1))
+                                 (if_then_else_M (EQ_M (reveal x3) (i 2)) O
+                                    (if_then_else_M
+                                       (EQ_M (reveal x3) (i 1)) &
+                                       (EQ_M (to x1) (i 1)) mx1rn1
+                                       (if_then_else_M
+                                          (EQ_M (reveal x3) (i 1)) &
+                                          (EQ_M (to x2) (i 1)) mx2rn2
+                                          (if_then_else_M
+                                             (EQ_M (to x3) (i 2)) acc O)))) O))))
+                     (if_then_else_M (EQ_M (to x1) (i 2))
+                        (if_then_else_M (EQ_M (reveal x2) (i 1)) O
+                           (if_then_else_M
+                              (EQ_M (reveal x2) (i 2)) & (EQ_M (to x1) (i 2))
+                              (if_then_else_M (EQ_M (reveal x3) (i 1)) O
+                                 (if_then_else_M
+                                    (EQ_M (to x3) (i 1)) &
+                                    (EQ_M (act x3) new) grn3
+                                    (if_then_else_M 
+                                       (EQ_M (to x3) (i 1)) grn3 O)))
+                              (if_then_else_M
+                                 (EQ_M (to x2) (i 1)) & (EQ_M (act x2) new)
+                                 (if_then_else_M (EQ_M (reveal x3) (i 1)) O
+                                    (if_then_else_M
+                                       (EQ_M (reveal x3) (i 2)) &
+                                       (EQ_M (to x1) (i 2)) mx1rn1
+                                       (if_then_else_M
+                                          (EQ_M (reveal x3) (i 2)) &
+                                          (EQ_M (to x2) (i 2)) mx2rn2
+                                          (if_then_else_M
+                                             (EQ_M (to x3) (i 1)) acc O)))) O)))
+                        O))))));

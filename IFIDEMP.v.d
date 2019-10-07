@@ -1,0 +1,1 @@
+IFIDEMP.vo IFIDEMP.glob IFIDEMP.v.beautified: IFIDEMP.v ./IFTF.v ./tactics1.v ./AUX_AXIOMS.v ./CORE_AXIOMS.v ./IND_MORPHISMS.v ./IND_DEFINITIONS.v

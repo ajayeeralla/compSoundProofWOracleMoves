@@ -1,0 +1,20 @@
+ Load "DH2_Pi1'_Pi2". 
+
+
+Theorem Pi1_Pi2 :  phi4~phi24. 
+
+assert(phi4~phi44).
+apply EQI_trans with (ml2:= phi34). 
+
+assert(phi5 ~ phi35). 
+
+apply Pi1_Pi2''. 
+aply_proj 1 7 H. 
+assumption.
+assert(phi35 ~ phi45). 
+apply pi2''_pi2'. 
+aply_proj 1 7 H. 
+assumption. 
+apply EQI_trans with (ml2:= phi44). assumption.
+apply Pi44_Pi24. 
+Qed.

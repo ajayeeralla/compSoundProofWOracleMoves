@@ -1,0 +1,61 @@
+Load "Example9".
+
+(***************************************************************)
+
+Theorem Example10_M: forall (x  F z : message), [msg x] ~ [msg (const F z )] ->    x # (const F z) .
+ Proof.
+intros.
+simpl in H.
+unfold const in H.
+unfold const.
+pose proof(FuncApp_L).
+apply FuncApp_L with (m:=1)(n:=1) (f:= @const (mylist 1) (mylist 1) [msg F] ) in H.
+pose proof(FuncApp_M1).
+unfold const in H.
+unfold app_mylist in H.
+apply FuncApp_M1 with (x1:= x)(x2:=F) (f:= EQ_M) in H.
+pose proof(RESTR).
+apply RESTR with (n:=3)(m:=1)(ml1:= [msg x; msg F; bol (EQ_M x F)]) (ml2:=[msg F; msg F; bol (EQ_M F F)]) (P:= (project (bol FAlse) 3 )) in H.
+
+simpl in H.
+assert (J:[bol (EQ_M F F) ] ~[bol TRue]) .
+apply EQindmsg1 with (x := F ) (y:=F) .
+reflexivity.
+assert (K:[bol (EQ_M x F)] ~[bol TRue]) .
+apply TRANS with (n:=1)(ml2 := [bol (EQ_M F F)]).
+split.
+apply H.
+apply J.
+apply EQindmsg in K.
+apply K.
+Qed.
+
+(*************x~f -> x=f******************************************************)
+
+Theorem Example10_B: forall (x  F z : Bool), [bol x] ~ [bol (const F z )] ->  x ## (const F  z) .
+ Proof.
+intros.
+simpl in H.
+unfold const in H.
+unfold const.
+pose proof(FuncApp_L).
+apply FuncApp_L with (m:=1)(n:=1) (f:= @const (mylist 1) (mylist 1) [bol F] ) in H.
+pose proof(FuncApp_M1).
+unfold const in H.
+unfold app_mylist in H.
+apply FuncApp_B1 with (b1:= x)(b2:=F) (f:= EQ_B) in H.
+pose proof(RESTR).
+apply RESTR with (n:=3)(m:=1)(ml1:= [bol x; bol F; bol (EQ_B x F)]) (ml2:=[bol F; bol F; bol (EQ_B F F)]) (P:= (project (bol FAlse) 3 )) in H.
+
+simpl in H.
+assert (J:[bol (EQ_B F F) ] ~[bol TRue]) .
+apply EQindBool1 with (b1 := F ) (b2:=F) .
+reflexivity.
+assert (K:[bol (EQ_B x F)] ~[bol TRue]) .
+apply TRANS with (n:=1)(ml2 := [bol (EQ_B F F)]).
+split.
+apply H.
+apply J.
+apply EQindBool in K.
+apply K.
+Qed.

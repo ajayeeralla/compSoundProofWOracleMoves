@@ -1,0 +1,1 @@
+Example9.vo Example9.glob Example9.v.beautified: Example9.v ./andB_notb.v ./IFMORPH.v ./IFIDEMP.v ./IFTF.v ./tactics1.v ./EQ_THEORY.v ./AUX_AXIOMS.v ./CORE_AXIOMS.v ./IND_MORPHISMS.v ./IND_DEFINITIONS.v

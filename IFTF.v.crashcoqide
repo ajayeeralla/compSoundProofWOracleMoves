@@ -1,0 +1,17 @@
+Load "IND_AXIOMS".
+
+(*************IFTF******************************************)
+(******if b then true else false = b***********************)
+
+
+Theorem IFTF:  forall (n:nat),  (if_then_else_B (Bvar n) TRue FAlse) ## (Bvar n).
+Proof.
+intros.
+
+rewrite <- (IFSAME_B (Bvar n) (Bvar n)) at 2.
+rewrite -> IFEVAL_B with (b1 := (Bvar n)).
+simpl.
+rewrite <- beq_nat_refl.
+reflexivity.
+Qed.
+

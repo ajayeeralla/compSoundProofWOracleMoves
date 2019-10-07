@@ -1,0 +1,188 @@
+Load "Example16".
+Variable nt : Bool -> Bool.
+(******************************************************************************************)
+(******************************************************************************************)
+
+Fixpoint proj_at_pos {m} (a:oursum) (n:nat) (ml : mylist m) : oursum :=
+match n with 
+| 0 => a
+| S 0 => match ml with
+        | [] => a
+        | h :: t => h
+        end
+| S n' => match ml with
+           | [] => a
+           | h :: t => (proj_at_pos a n' t)
+              end
+end.
+
+Eval compute in proj_at_pos (msg O) 100  [bol (Bvar 1) ; bol (Bvar 2); msg (N 1); msg (N 2); msg (N 3)].
+
+(*******************************************************************************************)
+(*******************************************************************************************)
+
+(******check if oursum has bool in it*********************)
+
+Definition chkbol_os (a : oursum) : bool  :=
+match a with
+| bol a' => true
+| msg a' => false
+end.
+
+(******check if oursum has bool in it*********************)
+
+Definition chkmsg_os (a : oursum) : bool  :=
+match a with
+| bol a' => false
+| msg a' => true
+end.
+
+(************convert bol b -> b *************************)
+
+Definition ostobol (a :oursum) : Bool :=
+ match a with
+| bol a' => a'
+| msg a' => TRue
+end. 
+(***************convert msg m -> m**********************)
+          
+Definition ostomsg (a : oursum) : message :=
+match a with
+| bol a' => O
+| msg a' => a'
+end.
+
+(***************check if the term at given pos is Bool *****************)
+
+Definition chkbol_at_pos  {m} (n :nat) (ml :mylist m) : bool := (chkbol_os (proj_at_pos (msg O) n ml)).
+
+(***************check if the term at given pos is message *****************)
+Definition chkmsg_at_pos  {m} (n :nat) (ml :mylist m) : bool := (chkmsg_os (proj_at_pos (msg O) n ml)).
+
+
+(******************* if the elt at given pos is Bool then negate it ***********)
+
+Definition neg_at_pos {m} (nt: Bool -> Bool) (a : oursum) (n:nat ) (ml : mylist m) : mylist 1 := 
+[if (eqb (chkbol_os (proj_at_pos a n ml)) true) then (bol (nt (ostobol (proj_at_pos a n ml)))) else (proj_at_pos a n ml)].
+
+Eval compute in neg_at_pos nt (msg O) 3  [bol (Bvar 1) ; bol (Bvar 2); msg (N 1); msg (N 2); msg (N 3)].
+
+(*************pairing the elements at given positions n1, n2********************)
+
+Definition pair_at_pos {m} (a : oursum ) (n1 n2 : nat) (ml : mylist m) : message :=
+if (eqb (chkmsg_os (proj_at_pos a n1 ml)) true) then (pair (ostomsg (proj_at_pos a n1 ml)) (if (eqb (chkmsg_os (proj_at_pos a n2 ml)) true) then (ostomsg (proj_at_pos a n2 ml)) else O))
+else ((pair (O) (if (eqb (chkmsg_os (proj_at_pos a n2 ml)) true) then (ostomsg (proj_at_pos a n2 ml)) else O))).
+
+(********constructing the term if_then_else_M with the terms at the positions : if_then_else_M n1 n2 <<n2 n3>, n3> **********)
+
+Definition ifm_mylist {m} (a : oursum) (n1 n2 n3 n4 :nat) (ml : mylist m) : mylist 1 :=
+if (eqb (chkbol_os (proj_at_pos a n1 ml)) true)  then [(msg (if_then_else_M (ostobol (proj_at_pos a n1 ml)) (if (eqb (chkmsg_os (proj_at_pos a n2 ml)) true) then 
+(ostomsg (proj_at_pos a n2 ml)) else O) (pair (pair (if (eqb (chkmsg_os (proj_at_pos a n2 ml)) true) then 
+(ostomsg (proj_at_pos a n2 ml)) else O) (if (eqb (chkmsg_os (proj_at_pos a n3 ml)) true) then 
+(ostomsg (proj_at_pos a n3 ml)) else O))  (if (eqb (chkmsg_os (proj_at_pos a n4 ml)) true) then 
+(ostomsg (proj_at_pos a n4 ml)) else O))  )) ] else  [(msg (if_then_else_M TRue (if (eqb (chkmsg_os (proj_at_pos a n2 ml)) true) then 
+(ostomsg (proj_at_pos a n2 ml)) else O) (pair (pair (if (eqb (chkmsg_os (proj_at_pos a n2 ml)) true) then 
+(ostomsg (proj_at_pos a n2 ml)) else O) (if (eqb (chkmsg_os (proj_at_pos a n3 ml)) true) then 
+(ostomsg (proj_at_pos a n3 ml)) else O))  (if (eqb (chkmsg_os (proj_at_pos a n4 ml)) true) then 
+(ostomsg (proj_at_pos a n4 ml)) else O)) ) ) ].
+
+
+(******************if_then_else_M n1 n2 <n3,n4> ********************************)
+
+
+Definition ifm_mylist1 {m} (a : oursum) (n1 n2 n3 n4 :nat) (ml : mylist m) : mylist 1 :=
+if (eqb (chkbol_os (proj_at_pos a n1 ml)) true)  then [ (msg (if_then_else_M (ostobol (proj_at_pos a n1 ml)) (if (eqb (chkmsg_os (proj_at_pos a n2 ml)) true) then 
+(ostomsg (proj_at_pos a n2 ml)) else O)  (pair (if (eqb (chkmsg_os (proj_at_pos a n3 ml)) true) then 
+(ostomsg (proj_at_pos a n3 ml)) else O) (if (eqb (chkmsg_os (proj_at_pos a n4 ml)) true) then 
+(ostomsg (proj_at_pos a n4 ml)) else O))) )] else [(msg (if_then_else_M TRue (if (eqb (chkmsg_os (proj_at_pos a n2 ml)) true) then 
+(ostomsg (proj_at_pos a n2 ml)) else O)  (pair (if (eqb (chkmsg_os (proj_at_pos a n3 ml)) true) then 
+(ostomsg (proj_at_pos a n3 ml)) else O) (if (eqb (chkmsg_os (proj_at_pos a n4 ml)) true) then 
+(ostomsg (proj_at_pos a n4 ml)) else O))   ))].
+
+Eval compute in ifm_mylist (msg O) 1 3 4 5  [bol (Bvar 1) ; bol (Bvar 2); msg (N 1); msg (N 2); msg (N 3)].
+Eval compute in ifm_mylist1 (msg O) 1 3 4 5  [bol (Bvar 1) ; bol (Bvar 2); msg (N 1); msg (N 2); msg (N 3)].
+
+Eval compute in droptwo_mylist [bol (Bvar 1) ; bol (Bvar 2); msg (N 1); msg (N 2); msg (N 3)].
+
+(*************dropn_mylist : dropping n elts from mylist m***************************************)
+(*************************************************************************************************)
+
+Definition drop3_mylist {n:nat}(ml: mylist n):(mylist (pred (pred (pred n)))) := (dropone_mylist (droptwo_mylist ml)).
+Definition drop4_mylist {n:nat}(ml: mylist n):(mylist (pred (pred (pred (pred n))))) := (dropone_mylist (drop3_mylist ml)).
+Definition drop5_mylist {n:nat}(ml: mylist n):(mylist (pred (pred (pred (pred (pred n)))))) := (dropone_mylist (drop4_mylist ml)).
+
+
+(**************************************************************************************************)
+(**************************************************************************************************)
+Axiom IFMORPH_M4 : forall (b1 b2 : Bool) (m1 m2 m3 : message), (if_then_else_M b1 m1 (if_then_else_M b2 m2 m3) ) # (if_then_else_M b2 (if_then_else_M b1 m1 m2)(if_then_else_M b1 m1 m3)).
+
+(**************************************
+For variables b1 , b2 , n1 , n1' , n2 , n2' , n3 , n3' , n4' : b1 , b2 , n1 , n2 , n3 ~ b1, b2, n1', n2',n3' ~ b1, b2, n4',n2',n3' -> 
+if b1 then n1 else (if b2 then <n2, n3> else <n1, n2 ,n3> ~ if not(b2 ) then (if b1 then n1' else <n1' , n2' , n3'>)
+else (if b1' then n4' else < n2' , n3' >) *******************************************************************)
+
+Theorem Example17: forall (n11 n22 :nat) (n1  n2  n3 n1' n2' n3' n4' : nat),
+[bol (Bvar n11) ; bol (Bvar n22); msg (N n1); msg (N n2); msg (N n3)] ~ [bol (Bvar n11) ; bol (Bvar n22); msg (N n1'); msg (N n2'); msg (N n3')] /\ [bol (Bvar n11); bol (Bvar n22); msg (N n1'); msg (N n2'); msg (N n3')] ~ [bol (Bvar n11) ; bol (Bvar n22); msg (N n4'); msg (N n2'); msg (N n3')] -> 
+[msg (if_then_else_M (Bvar n11) (N n1) (if_then_else_M  (Bvar n22)  (pair  (N n2)  (N n3))  (pair ( pair  (N n1)  (N n2)  ) (N n3) )))  ] ~ [msg ( if_then_else_M (nt (Bvar n22)) (if_then_else_M (Bvar n11) (N n1')  (pair  (pair (N n1')  (N n2')) (N n3'))) (if_then_else_M (Bvar n11) (N n4')  (pair (N n2')  (N n3'))))].
+
+Proof. intros.
+
+assert(H1:  (if_then_else_M (Bvar n11) (N n1) (if_then_else_M (Bvar n22)   (pair  (N n2)  (N n3))  (pair ( pair  (N n1)  (N n2)  ) (N n3) ))) # (if_then_else_M (Bvar n22) (if_then_else_M (Bvar n11) (N n1) (pair  (N n2)  (N n3)) ) (if_then_else_M (Bvar n11) (N n1) (pair ( pair  (N n1)  (N n2)  ) (N n3) )))).
+rewrite IFMORPH_M4 with (m1 := (N n1)).
+reflexivity.
+
+assert (H2: (if_then_else_M (Bvar n22) (if_then_else_M (Bvar n11) (N n1) (pair (N n2) (N n3)) )
+          (if_then_else_M (Bvar n11) (N n1)  (pair (pair (N n1) (N n2)) (N n3)) )) # (if_then_else_M (nt (Bvar n22) ) (if_then_else_M (Bvar n11) (N n1)  (pair (pair (N n1) (N n2)) (N n3)))(if_then_else_M (Bvar n11)(N n1) (pair (N n2) (N n3)) ))).
+rewrite    Example16_M . reflexivity.
+
+assert (H3 : [ bol (nt (Bvar n22)); msg (if_then_else_M (Bvar n11) (N n1)  (pair (pair (N n1) (N n2)) (N n3)) )] ~ [ bol (nt (Bvar n22)); msg (if_then_else_M (Bvar n11) (N n1')  (pair (pair (N n1') (N n2')) (N n3')) )]).
+inversion H.
+pose proof (FuncApp_L).
+apply FuncApp_L with (m :=1) (f := neg_at_pos nt (msg O) 2 ) in H0.
+ unfold neg_at_pos in H0 ;unfold chkbol_os in H0 ; unfold proj_at_pos in H0.
+ rewrite eqb_reflx with (b:= true) in H0. simpl in H0.     
+apply FuncApp_L with (f := ifm_mylist  (msg O) 1 3 4 5) in H0. unfold ifm_mylist in H0. unfold chkbol_os in H0. unfold proj_at_pos in H0. unfold chkmsg_os in H0. rewrite eqb_reflx with (b:= true) in H0.
+simpl in H0.
+pose proof (RESTR).
+
+apply RESTR with (P:= drop5_mylist) in H0.
+ unfold drop5_mylist in H0 ; unfold drop4_mylist in H0 ; unfold drop3_mylist in H0 ; simpl in H0. apply H0.
+
+assert (H4 : [ bol (nt (Bvar n22)); msg (if_then_else_M (Bvar n11) (N n1)  (pair (N n2) (N n3)) )] ~ [ bol (nt (Bvar n22)); msg (if_then_else_M (Bvar n11) (N n4')  (pair  (N n2') (N n3')) )]).
+inversion H.
+
+apply TRANS with (ml2 := [bol (Bvar n11); bol (Bvar n22); msg (N n1'); msg (N n2'); msg (N n3')]) in H.
+apply FuncApp_L with (m :=1) (f := neg_at_pos nt (msg O) 2 ) in H.
+ unfold neg_at_pos in H ;unfold chkbol_os in H; unfold proj_at_pos in H.
+ rewrite eqb_reflx with (b:= true) in H. simpl in H.    
+apply FuncApp_L with (f := ifm_mylist1  (msg O) 1 3 4 5) in H. unfold ifm_mylist1 in H. unfold chkbol_os in H. unfold proj_at_pos in H. unfold chkmsg_os in H. rewrite eqb_reflx with (b:= true) in H.
+
+simpl in H. apply RESTR with (P:= drop5_mylist) in H. 
+unfold drop5_mylist in H ; unfold drop4_mylist in H ; unfold drop3_mylist in H ; simpl in H. apply H.
+SearchAbout andb.
+
+assert (H5 : [bol (nt (Bvar n22));
+      msg (if_then_else_M (Bvar n11) (N n1)  (pair  (pair (N n1) (N n2)) (N n3) ))] ~
+     [bol (nt (Bvar n22));
+     msg (if_then_else_M (Bvar n11) (N n1')   (pair  (pair (N n1') (N n2')) (N n3') ))] /\ [bol (nt (Bvar n22));
+      msg (if_then_else_M (Bvar n11) (N n1)  (pair ( N n2) (N n3)))] ~
+     [bol (nt (Bvar n22));
+     msg (if_then_else_M (Bvar n11) (N n4')  (pair (N n2') (N n3')))]).
+split.
+apply H3. apply H4.
+pose proof (IFBRANCH_M).
+
+assert(H6 : [bol (nt (Bvar n22)); msg (if_then_else_M (nt (Bvar n22)) (if_then_else_M (Bvar n11) (N n1)   (pair  (pair (N n1) (N n2)) (N n3) )) (if_then_else_M (Bvar n11) (N n1)  (pair ( N n2) (N n3))))]~
+[bol (nt (Bvar n22)) ; msg (if_then_else_M (nt (Bvar n22)) (if_then_else_M (Bvar n11) (N n1')   (pair  (pair (N n1') (N n2')) (N n3') )) (if_then_else_M (Bvar n11) (N n4')  (pair ( N n2') (N n3'))))]).
+apply IFBRANCH_M with (ml1 := []) (ml2 := [])(b := (nt (Bvar n22))) (b' := (nt (Bvar n22))) (x := (if_then_else_M (Bvar n11) (N n1) (pair  (pair (N n1) (N n2)) (N n3) ))) (x' := (if_then_else_M (Bvar n11) (N n1') (pair  (pair (N n1') (N n2')) (N n3') ) ))  (y := (if_then_else_M (Bvar n11) (N n1)  (pair ( N n2) (N n3))))(y':=(if_then_else_M (Bvar n11) (N n4')  (pair (N n2') (N n3')))) . 
+simpl. apply H3.
+simpl. apply H4.
+apply RESTR with (P:= dropone_mylist) in H6.  simpl in H6.
+pose proof(Example16_M).
+rewrite Example16_M with (n:= n22) (m1 := (if_then_else_M (Bvar n11) (N n1)   (pair  (pair (N n1) (N n2)) (N n3) ))) in H6.
+
+pose proof(IFMORPH_M4). 
+rewrite <- IFMORPH_M4 with (b2 := (Bvar n22)) (b1 := (Bvar n11)) (m1 := (N n1))  in H6.
+apply H6. 
+Qed.
+

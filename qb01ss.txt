@@ -1,0 +1,84 @@
+(if_then_elsem_ (EQM (reveal x2) (i 2)) & (EQM (to x1) (i 2))
+        (if_then_elsem_ (EQM (reveal x3) (i 1)) O
+           (if_then_elsem_ (EQM (to x3) (i 1)) & (EQM (act x3) new)
+              (if_then_elsem_ (EQM (reveal x4) (i 1)) O
+                 (if_then_elsem_
+                    (EQM (to x4) (i 1)) &
+                    (EQM (pi1 (dec x4 (sk (N 1)))) (nc 3))
+                    (enc (pi1 (pi2 (dec x4 (sk (N 1)))))
+                       (pi2 (pi2 (dec x4 (sk (N 1))))) 
+                       (sr 10)) O)) O))
+        (if_then_elsem_ (EQM (reveal x2) (i 1)) O
+           (if_then_elsem_ (EQM (to x2) (i 1)) & (EQM (act x2) new)
+              (if_then_elsem_ (EQM (reveal x3) (i 1)) & (EQM (to x1) (i 1))
+                 (if_then_elsem_ (EQM (reveal x4) (i 1)) O
+                    (if_then_elsem_
+                       (EQM (to x4) (i 1)) &
+                       (EQM (pi1 (dec x4 (sk (N 1)))) (nc 3))
+                       (enc (pi1 (pi2 (dec x4 (sk (N 1)))))
+                          (pi2 (pi2 (dec x4 (sk (N 1))))) 
+                          (sr 10)) O))
+                 (if_then_elsem_
+                    (EQM (reveal x3) (i 1)) & (EQM (to x2) (i 1))
+                    (if_then_elsem_ (EQM (reveal x4) (i 1)) O
+                       (if_then_elsem_
+                          (EQM (to x4) (i 1)) &
+                          (EQM (pi1 (dec x4 (sk (N 1)))) (nc 3))
+                          (enc (pi1 (pi2 (dec x4 (sk (N 1)))))
+                             (pi2 (pi2 (dec x4 (sk (N 1))))) 
+                             (sr 10)) O))
+                    (if_then_elsem_
+                       (EQM (to x3) (i 1)) &
+                       (EQM (pi1 (dec x2 (sk (N 1)))) (nc 3))
+                       (if_then_elsem_
+                          (((((((EQM (reveal x4) (i 2)) & (EQM (to x3) (i 1))) &
+                               (EQM (to x2) (i 2))) & 
+                              (EQM (to x1) (i 1))) &
+                             (notb (EQM (act x3) new))) & 
+                            (EQM (act x1) new)) &
+                           (EQM (pi1 (dec x3 (sk (N 1)))) (nc 3))) &
+                          (EQM (pi1 (dec x2 (sk (N 2)))) (nc 3)) 
+                          (nc 5)
+                          (if_then_elsem_
+                             (((((((EQM (reveal x4) (i 1)) &
+                                   (EQM (to x3) (i 1))) & 
+                                  (EQM (to x2) (i 2))) & 
+                                 (EQM (to x1) (i 1))) &
+                                (notb (EQM (act x3) new))) &
+                               (EQM (act x1) new)) &
+                              (EQM (pi1 (dec x3 (sk (N 1)))) (nc 3))) &
+                             (EQM (pi1 (dec x2 (sk (N 2)))) (nc 3)) 
+                             (nc 5)
+                             (if_then_elsem_
+                                (EQM (reveal x4) (i 2)) & (EQM (to x1) (i 2))
+                                (pi1 (dec x1 (sk (N 2))))
+                                (if_then_elsem_
+                                   (EQM (reveal x4) (i 2)) &
+                                   (EQM (to x2) (i 2))
+                                   (pi1 (dec x2 (sk (N 2))))
+                                   (if_then_elsem_
+                                      (EQM (reveal x4) (i 2)) &
+                                      (EQM (to x3) (i 2))
+                                      (pi1 (dec x3 (sk (N 2))))
+                                      (if_then_elsem_
+                                         ((((EQM (reveal x4) (i 1)) &
+                                            (EQM (to x2) (i 1))) &
+                                           (EQM (to x1) (i 1))) &
+                                          (notb (EQM (act x2) new))) &
+                                         (EQM (act x1) new)
+                                         (pi1 (dec x2 (sk (N 1))))
+                                         (if_then_elsem_
+                                            ((((EQM (reveal x4) (i 1)) &
+                                               (EQM (to x3) (i 1))) &
+                                              (EQM (to x1) (i 1))) &
+                                             (notb (EQM (act x3) new))) &
+                                            (EQM (act x1) new)
+                                            (pi1 (dec x3 (sk (N 1))))
+                                            (if_then_elsem_
+                                               ((((EQM (reveal x4) (i 1)) &
+                                                  (EQM (to x3) (i 1))) &
+                                                 (EQM (to x2) (i 1))) &
+                                                (notb (EQM (act x3) new))) &
+                                               (EQM (act x2) new)
+                                               (pi1 (dec x3 (sk (N 1)))) O))))))))
+                       O))) O)))

@@ -1,0 +1,1 @@
+Example13.vo Example13.glob Example13.v.beautified: Example13.v ./EQBRANCH.v ./Example12.v ./Example11.v ./ExtraProof_1.v ./Example10.v ./Example9.v ./andB_notb.v ./IFMORPH.v ./IFIDEMP.v ./IFTF.v ./tactics1.v ./EQ_THEORY.v ./AUX_AXIOMS.v ./CORE_AXIOMS.v ./IND_MORPHISMS.v ./IND_DEFINITIONS.v

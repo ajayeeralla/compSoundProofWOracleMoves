@@ -1,0 +1,16 @@
+Require Import Coq.MSets.MSets.
+Require Import Coq.MSets.MSetList.
+Require Import Coq.Lists.ListSet.
+SearchAbout set.
+Check set.
+
+Require Import IND_DEFINITIONS.
+Check set.
+
+
+
+Definition setQ  := (@set nat) .
+Check set.
+
+
+Definition trans_system (a:setQ){m:nat} (l:mylist m) (
